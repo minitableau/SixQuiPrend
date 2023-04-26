@@ -27,7 +27,7 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
-    private int numberOfPlayers = 6;
+    private int numberOfPlayers = 4;
 
     @Override
     public void start(Stage primaryStage) {
@@ -95,13 +95,13 @@ public class Board extends Application {
         mainPane.setCenter(playingCards);
 
         // On soustrait 1 au nombre de joueur on divise par le  de case que l'on souhaite par ligne et on ajoute 1
-        for (int i = 0; i <= (numberOfPlayers - 1) / 3 ; i++) {
+        for (int i = 0; i <= (numberOfPlayers - 1) / 3; i++) {
             HBox cardHBox = new HBox();
             cardHBox.setSpacing(10);
             playingCards.getChildren().add(cardHBox);
             cardHBox.setAlignment(Pos.CENTER_RIGHT);
-            if (i == (numberOfPlayers - 1) / 3) {
-                for (int j = 0; j < 3 - numberOfPlayers % 3; j++) {
+            if (i == (numberOfPlayers - 1) / 3 && numberOfPlayers % 3 != 0) {
+                for (int j = 0; j < numberOfPlayers % 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
                     cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
@@ -118,8 +118,12 @@ public class Board extends Application {
         }
 
         // Créer la HBox qui contiendra les boutons d'action du joueur
-        playerActionsBox = new HBox();
-        playerActionsBox.setPadding(new Insets(10, 10, 10, 10));
+        playerActionsBox = new
+
+                HBox();
+        playerActionsBox.setPadding(new
+
+                Insets(10, 10, 10, 10));
         playerActionsBox.setSpacing(10);
         playerActionsBox.setAlignment(Pos.CENTER);
 
@@ -134,17 +138,25 @@ public class Board extends Application {
 //        mainPane.setTop(playerActionsBox);
 
         // Créer la VBox qui contiendra la barre de score des joueurs
-        scoreBox = new VBox();
-        scoreBox.setPadding(new Insets(10, 10, 10, 10));
+        scoreBox = new
+
+                VBox();
+        scoreBox.setPadding(new
+
+                Insets(10, 10, 10, 10));
         scoreBox.setSpacing(10);
         scoreBox.setAlignment(Pos.CENTER_LEFT);
 
         // Ajouter les labels pour le joueur courant et le tour courant
-        currentPlayerLabel = new Label("Joueur 1");
+        currentPlayerLabel = new
+
+                Label("Joueur 1");
         currentPlayerLabel.setFont(Font.font(20));
         currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
 
-        currentRoundLabel = new Label("Tour 1");
+        currentRoundLabel = new
+
+                Label("Tour 1");
         currentRoundLabel.setFont(Font.font(20));
         currentRoundLabel.setTextAlignment(TextAlignment.CENTER);
 
@@ -165,7 +177,9 @@ public class Board extends Application {
         player1ScoreLabel.setFont(Font.font(16));
         player1ScoreLabel.setTextFill(Color.BLUE);
 
-        playerScoreBox1.getChildren().addAll(player1NameLabel, player1ScoreLabel);
+        playerScoreBox1.getChildren().
+
+                addAll(player1NameLabel, player1ScoreLabel);
 
         HBox playerScoreBox2 = new HBox();
         playerScoreBox2.setSpacing(10);
@@ -179,10 +193,14 @@ public class Board extends Application {
         player2ScoreLabel.setFont(Font.font(16));
         player2ScoreLabel.setTextFill(Color.RED);
 
-        playerScoreBox2.getChildren().addAll(player2NameLabel, player2ScoreLabel);
+        playerScoreBox2.getChildren().
+
+                addAll(player2NameLabel, player2ScoreLabel);
 
         // Ajouter les éléments de scoreBox
-        scoreBox.getChildren().addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel, playerScoreBox1, playerScoreBox2);
+        scoreBox.getChildren().
+
+                addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel, playerScoreBox1, playerScoreBox2);
 
         // Ajouter la VBox de scores au BorderPane principal
         mainPane.setRight(scoreBox);
