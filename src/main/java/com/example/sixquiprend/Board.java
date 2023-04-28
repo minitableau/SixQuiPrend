@@ -1,5 +1,8 @@
 package com.example.sixquiprend;
 
+import com.example.sixquiprend.Jeu.Card;
+import com.example.sixquiprend.Jeu.Game;
+import com.example.sixquiprend.Jeu.Player;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -36,9 +39,9 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
-    private int numberOfPlayers = 10;
+    private int numberOfPlayers = 5;
 
-    private int playerPlaying = 5;
+    private int playerPlaying = 3;
     private int round = 1;
     private VBox gameCardBarBox;
     private HBox cardBarBox;
@@ -46,6 +49,7 @@ public class Board extends Application {
     private boolean canClickArrow = false;
     private Set<Polygon> arrowSet = new HashSet<>();
     private VBox playingCards;
+    private String name;
 
     @Override
     public void start(Stage primaryStage) {
@@ -208,9 +212,13 @@ public class Board extends Application {
         addCard(2, 0, "32.png");
         addCard(3, 0, "19.png");
 
+
         //TODO Remplir la main du joueur
+        Game game = new Game(numberOfPlayers);
+        Player player = game.getPlayers()[playerPlaying - 1];
+        Card[] handCards = player.getHandCards();
         for (int i = 0; i < 10; i++) {
-            addCardInHand(i, i + 20 + ".png");
+            addCardInHand(i, handCards[i].getNumber() + ".png");
         }
 
 

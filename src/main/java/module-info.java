@@ -5,4 +5,6 @@ module com.example.sixquiprend {
 
     opens com.example.sixquiprend to javafx.fxml;
     exports com.example.sixquiprend;
+    exports com.example.sixquiprend.Jeu;
+    opens com.example.sixquiprend.Jeu to javafx.fxml;
 }
