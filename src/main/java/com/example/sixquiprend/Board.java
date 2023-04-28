@@ -1,7 +1,6 @@
 package com.example.sixquiprend;
 
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,9 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -229,7 +230,7 @@ public class Board extends Application {
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
         primaryStage.show();
-addCard(1,1,"1.png");
+        addCard(1, 1, "1.png");
 
 
     }
@@ -251,14 +252,16 @@ addCard(1,1,"1.png");
         setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
     }
+
     private boolean canClickArrow = false;
     private Set<Polygon> arrowSet = new HashSet<>();
+
     public void setOnClickAction(ImageView imageView, int x, int y) {
         imageView.setOnMouseClicked(event -> {
             if (!canClickArrow) {
                 System.out.println("Image clicked");
                 System.out.println("Card clicked: x = " + x + ", y = " + y);
-                changeCardPosition(1,1,3,3);
+                changeCardPosition(1, 1, 3, 3,true);
                 // Désactiver les clics sur les images
                 canClickArrow = true;
                 // Activer les clics sur les flèches
@@ -267,18 +270,21 @@ addCard(1,1,"1.png");
                 // Désactiver les clics sur les flèches
                 arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
                 canClickArrow = false;
-            };
+            }
+            ;
 
         });
     }
 
-    public void changeCardPosition(int x, int y, int newX, int newY) {
+    public void changeCardPosition(int x, int y, int newX, int newY, boolean turn) {
 
         // Obtient la StackPane à la position x, y
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(x)).getChildren().get(y);
         // Récupère l'image à partir de la StackPane
         ImageView imageView = (ImageView) cardPane.getChildren().get(0);
-
+        if (turn == true) {
+            flipImage(imageView);
+        }
         // Calcule la distance horizontale et verticale à parcourir
         double deltaX = (newX - x) * CARD_BAR_WIDTH;
         double deltaY = (newY - y) * CARD_BAR_HEIGHT;
@@ -304,6 +310,45 @@ addCard(1,1,"1.png");
         });
         transition.play();
         System.out.println("Moving card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
+    }
+
+    public void changeCardPosition(int x, int y, int newX, int newY) {
+        changeCardPosition(x, y, newX, newY, false);
+    }
+
+    public void flipImage(ImageView imageView) {
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.5), imageView);
+        rotateTransition.setAxis(Rotate.Y_AXIS);
+        rotateTransition.setFromAngle(0);
+        rotateTransition.setToAngle(180);
+        rotateTransition.setInterpolator(Interpolator.EASE_BOTH);
+
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.5), imageView);
+        scaleTransition.setFromX(1);
+        scaleTransition.setToX(0);
+        scaleTransition.setInterpolator(Interpolator.EASE_BOTH);
+
+        ParallelTransition parallelTransition = new ParallelTransition(rotateTransition, scaleTransition);
+        parallelTransition.setOnFinished(event -> {
+            imageView.setScaleX(1);
+            String imagePath = "/images/cards/backside.png";
+            URL imageUrl = Board.class.getResource(imagePath);
+            imageView.setImage(new Image(imageUrl.toExternalForm()));
+            RotateTransition rotateTransition2 = new RotateTransition(Duration.seconds(0.5), imageView);
+            rotateTransition2.setAxis(Rotate.Y_AXIS);
+            rotateTransition2.setFromAngle(-180);
+            rotateTransition2.setToAngle(0);
+            rotateTransition2.setInterpolator(Interpolator.EASE_BOTH);
+
+            ScaleTransition scaleTransition2 = new ScaleTransition(Duration.seconds(0.5), imageView);
+            scaleTransition2.setFromX(0);
+            scaleTransition2.setToX(1);
+            scaleTransition2.setInterpolator(Interpolator.EASE_BOTH);
+
+            ParallelTransition parallelTransition2 = new ParallelTransition(rotateTransition2, scaleTransition2);
+            parallelTransition2.play();
+        });
+        parallelTransition.play();
     }
 
 }
