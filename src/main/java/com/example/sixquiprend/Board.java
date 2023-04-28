@@ -1,16 +1,24 @@
 package com.example.sixquiprend;
 
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Board extends Application {
 
@@ -31,11 +39,13 @@ public class Board extends Application {
 
     private int playerPlaying = 2;
     private int round = 1;
+    private VBox gameCardBarBox;
     private final Color[] colorList = new Color[]{Color.BLUE, Color.PURPLE, Color.DEEPPINK, Color.ORANGE, Color.GREEN, Color.YELLOWGREEN, Color.BROWN, Color.GRAY, Color.MAGENTA, Color.DARKCYAN};
 
 
     @Override
     public void start(Stage primaryStage) {
+
         // Créer le BorderPane principal qui contiendra les éléments du jeu
         mainPane = new BorderPane();
         mainPane.setPadding(new Insets(10, 10, 10, 10));
@@ -53,7 +63,7 @@ public class Board extends Application {
         cardBarBox.setSpacing(10);
         cardBarBox.setAlignment(Pos.CENTER);
 
-        VBox gameCardBarBox = new VBox();
+        gameCardBarBox = new VBox();
         gameCardBarBox.setPadding(new Insets(10, 10, 10, 10));
         gameCardBarBox.setSpacing(10);
 
@@ -219,6 +229,7 @@ public class Board extends Application {
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
         primaryStage.show();
+addCard(1,1,"1.png");
 
 
     }
@@ -232,5 +243,67 @@ public class Board extends Application {
 //        cardPane.getChildren().add(cardLabel);
 //    }
 
+
+    private void addCard(int i, int j, String imageName) {
+        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
+        ImageView imageView = new ImageView(new Image("file:C:/Users/alexa/OneDrive/Documents/A1/JAVA/SixQuiPrend/src/main/resources/images/cards/" + imageName));
+
+        setOnClickAction(imageView, i, j);
+        cardPane.getChildren().add(imageView);
+    }
+    private boolean canClickArrow = false;
+    private Set<Polygon> arrowSet = new HashSet<>();
+    public void setOnClickAction(ImageView imageView, int x, int y) {
+        imageView.setOnMouseClicked(event -> {
+            if (!canClickArrow) {
+                System.out.println("Image clicked");
+                System.out.println("Card clicked: x = " + x + ", y = " + y);
+                changeCardPosition(1,1,3,3);
+                // Désactiver les clics sur les images
+                canClickArrow = true;
+                // Activer les clics sur les flèches
+
+
+                // Désactiver les clics sur les flèches
+                arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+                canClickArrow = false;
+            };
+
+        });
+    }
+
+    public void changeCardPosition(int x, int y, int newX, int newY) {
+
+        // Obtient la StackPane à la position x, y
+        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(x)).getChildren().get(y);
+        // Récupère l'image à partir de la StackPane
+        ImageView imageView = (ImageView) cardPane.getChildren().get(0);
+
+        // Calcule la distance horizontale et verticale à parcourir
+        double deltaX = (newX - x) * CARD_BAR_WIDTH;
+        double deltaY = (newY - y) * CARD_BAR_HEIGHT;
+
+        // Crée une transition de translation pour déplacer l'image
+        TranslateTransition transition = new TranslateTransition(Duration.millis(500), imageView);
+        transition.setToX(imageView.getTranslateX() + deltaX);
+        transition.setToY(imageView.getTranslateY() + deltaY);
+        transition.setInterpolator(Interpolator.EASE_BOTH);
+
+        // Ajoute un événement pour déplacer l'image à la fin de la transition
+        transition.setOnFinished(event -> {
+            // Supprime l'image de la StackPane
+            cardPane.getChildren().remove(imageView);
+            // Obtient la nouvelle StackPane où l'image doit être placée
+            StackPane newCardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(newX)).getChildren().get(newY);
+            // Ajoute l'image à la nouvelle StackPane
+            newCardPane.getChildren().add(imageView);
+            // Réinitialise les propriétés de translation de l'image
+            imageView.setTranslateX(0);
+            imageView.setTranslateY(0);
+            System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
+        });
+        transition.play();
+        System.out.println("Moving card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
+    }
 
 }

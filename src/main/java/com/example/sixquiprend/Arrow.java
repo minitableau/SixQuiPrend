@@ -1,15 +1,27 @@
 package com.example.sixquiprend;
 
 import javafx.application.Application;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
+
 
 public class Arrow extends Application {
 
     private final int WIDTH = 500;
     private final int HEIGHT = 500;
+
     private Polygon arrow;
+
+    private Board board;
+
+
+
+
 
     public Polygon getArrow(double width, double height) {
         Polygon arrow = new Polygon();
@@ -24,10 +36,14 @@ public class Arrow extends Application {
         arrow.setFill(Color.TRANSPARENT);
         arrow.setStroke(Color.BLACK);
 
+
+
         // Gérer l'événement de clic sur la flèche
         arrow.setOnMouseClicked(event -> {
-            arrow.setFill(Color.RED);
+            System.out.println("Im clicked");
+
         });
+
 
         // Gérer l'événement de survol de la souris sur la flèche
         arrow.setOnMouseEntered(event -> {
@@ -43,13 +59,17 @@ public class Arrow extends Application {
     }
 
 
+
+
     @Override
     public void start(Stage stage) throws Exception {
         arrow = getArrow(WIDTH, HEIGHT);
         stage.setScene(new javafx.scene.Scene(arrow.getParent()));
         stage.show();
     }
+
+    public String getDirection() {
+        return null;
+    }
 }
-
-
 
