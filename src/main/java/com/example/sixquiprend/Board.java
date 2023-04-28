@@ -41,8 +41,11 @@ public class Board extends Application {
     private int playerPlaying = 2;
     private int round = 1;
     private VBox gameCardBarBox;
+    private HBox cardBarBox;
     private final Color[] colorList = new Color[]{Color.BLUE, Color.PURPLE, Color.DEEPPINK, Color.ORANGE, Color.GREEN, Color.YELLOWGREEN, Color.BROWN, Color.GRAY, Color.MAGENTA, Color.DARKCYAN};
-
+    private boolean canClickArrow = false;
+    private Set<Polygon> arrowSet = new HashSet<>();
+    private VBox playingCards;
 
     @Override
     public void start(Stage primaryStage) {
@@ -59,7 +62,7 @@ public class Board extends Application {
         cardGridPane.setHgap(10);
 
         // Créer la HBox qui contiendra les emplacements pour les cartes du joueur
-        HBox cardBarBox = new HBox();
+        cardBarBox = new HBox();
         cardBarBox.setPadding(new Insets(10, 10, 10, 10));
         cardBarBox.setSpacing(10);
         cardBarBox.setAlignment(Pos.CENTER);
@@ -101,7 +104,7 @@ public class Board extends Application {
 
         }
 
-        VBox playingCards = new VBox();
+        playingCards = new VBox();
         playingCards.setPadding(new Insets(10, 10, 10, 10));
         playingCards.setSpacing(10);
 
@@ -190,38 +193,6 @@ public class Board extends Application {
             scoreBox.getChildren().add(playerScoreBox);
         }
 
-//        HBox playerScoreBox1 = new HBox();
-//        playerScoreBox1.setSpacing(10);
-//        playerScoreBox1.setAlignment(Pos.CENTER_LEFT);
-//
-//        Label player1NameLabel = new Label("Joueur 1 :");
-//        player1NameLabel.setFont(Font.font(16));
-//        player1NameLabel.setTextFill(Color.BLUE);
-//
-//        Label player1ScoreLabel = new Label("0");
-//        player1ScoreLabel.setFont(Font.font(16));
-//        player1ScoreLabel.setTextFill(Color.BLUE);
-//
-//        playerScoreBox1.getChildren().addAll(player1NameLabel, player1ScoreLabel);
-
-//        HBox playerScoreBox2 = new HBox();
-//        playerScoreBox2.setSpacing(10);
-//        playerScoreBox2.setAlignment(Pos.CENTER_LEFT);
-//
-//        Label player2NameLabel = new Label("Joueur 2 :");
-//        player2NameLabel.setFont(Font.font(16));
-//        player2NameLabel.setTextFill(Color.RED);
-//
-//        Label player2ScoreLabel = new Label("0");
-//        player2ScoreLabel.setFont(Font.font(16));
-//        player2ScoreLabel.setTextFill(Color.RED);
-//
-//        playerScoreBox2.getChildren().addAll(player2NameLabel, player2ScoreLabel);
-
-        // Ajouter les éléments de scoreBox
-//        scoreBox.getChildren().addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel, playerScoreBox1, playerScoreBox2);
-
-
         // Ajouter la VBox de scores au BorderPane principal
         mainPane.setRight(scoreBox);
 
@@ -231,6 +202,7 @@ public class Board extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         addCard(1, 1, "1.png");
+        addCardInHand(1, "2.png");
 
 
     }
@@ -247,26 +219,27 @@ public class Board extends Application {
 
     private void addCard(int i, int j, String imageName) {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
-        ImageView imageView = new ImageView(new Image("file:C:/Users/alexa/OneDrive/Documents/A1/JAVA/SixQuiPrend/src/main/resources/images/cards/" + imageName));
-
-        setOnClickAction(imageView, i, j);
+        ImageView imageView = new ImageView(new Image("file:D:/Projets/Java/SixQuiPrend/src/main/resources/images/cards/" + imageName));
+//        setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
     }
 
-    private boolean canClickArrow = false;
-    private Set<Polygon> arrowSet = new HashSet<>();
+    private void addCardInHand(int i, String imageName) {
+        StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+        ImageView imageView = new ImageView(new Image("file:D:/Projets/Java/SixQuiPrend/src/main/resources/images/cards/" + imageName));
+        setOnClickAction(imageView, i, 0);
+        cardPane.getChildren().add(imageView);
+    }
 
     public void setOnClickAction(ImageView imageView, int x, int y) {
         imageView.setOnMouseClicked(event -> {
             if (!canClickArrow) {
                 System.out.println("Image clicked");
                 System.out.println("Card clicked: x = " + x + ", y = " + y);
-                changeCardPosition(1, 1, 3, 3,true);
+                // ATTENTION X = Colonnes, Y = Lignes.
+                changeCardPosition(x, 0,(playerPlaying - 1) / 3 , playerPlaying % 3 - 1);
                 // Désactiver les clics sur les images
                 canClickArrow = true;
-                // Activer les clics sur les flèches
-
-
                 // Désactiver les clics sur les flèches
                 arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
                 canClickArrow = false;
@@ -279,7 +252,8 @@ public class Board extends Application {
     public void changeCardPosition(int x, int y, int newX, int newY, boolean turn) {
 
         // Obtient la StackPane à la position x, y
-        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(x)).getChildren().get(y);
+//        StackPane cardPane = (StackPane) ((HBox) playingCards.getChildren().get(x)).getChildren().get(y);
+        StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
         // Récupère l'image à partir de la StackPane
         ImageView imageView = (ImageView) cardPane.getChildren().get(0);
         if (turn == true) {
@@ -291,8 +265,9 @@ public class Board extends Application {
 
         // Crée une transition de translation pour déplacer l'image
         TranslateTransition transition = new TranslateTransition(Duration.millis(500), imageView);
-        transition.setToX(imageView.getTranslateX() + deltaX);
-        transition.setToY(imageView.getTranslateY() + deltaY);
+        // - car la carte va vers le haut
+        transition.setToX(imageView.getTranslateX() - deltaX);
+        transition.setToY(imageView.getTranslateY() - deltaY);
         transition.setInterpolator(Interpolator.EASE_BOTH);
 
         // Ajoute un événement pour déplacer l'image à la fin de la transition
@@ -300,7 +275,7 @@ public class Board extends Application {
             // Supprime l'image de la StackPane
             cardPane.getChildren().remove(imageView);
             // Obtient la nouvelle StackPane où l'image doit être placée
-            StackPane newCardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(newX)).getChildren().get(newY);
+            StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(newX)).getChildren().get(newY);
             // Ajoute l'image à la nouvelle StackPane
             newCardPane.getChildren().add(imageView);
             // Réinitialise les propriétés de translation de l'image
