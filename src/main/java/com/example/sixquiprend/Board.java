@@ -219,8 +219,9 @@ public class Board extends Application {
 
     private void addCard(int i, int j, String imageName) {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
-        ImageView imageView = new ImageView(new Image("file:D:/Projets/Java/SixQuiPrend/src/main/resources/images/cards/" + imageName));
-//        setOnClickAction(imageView, i, j);
+        URL imageUrl = Board.class.getResource("/images/cards/");
+        ImageView imageView = new ImageView(new Image(imageUrl + imageName));
+  //        setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
     }
 
