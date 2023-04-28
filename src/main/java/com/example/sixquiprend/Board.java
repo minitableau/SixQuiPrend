@@ -28,6 +28,9 @@ public class Board extends Application {
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
     private int numberOfPlayers = 10;
+
+    private int playerPlaying = 2;
+    private int round = 1;
     private final Color[] colorList = new Color[]{Color.BLUE, Color.PURPLE, Color.DEEPPINK, Color.ORANGE, Color.GREEN, Color.YELLOWGREEN, Color.BROWN, Color.GRAY, Color.MAGENTA, Color.DARKCYAN};
 
 
@@ -62,7 +65,7 @@ public class Board extends Application {
         for (int i = 0; i < 10; i++) {
             StackPane cardPane = new StackPane();
             cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-            cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+            cardPane.setBorder(new Border(new BorderStroke(colorList[playerPlaying - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
             cardBarBox.getChildren().add(cardPane);
         }
 
@@ -141,13 +144,15 @@ public class Board extends Application {
         scoreBox.setAlignment(Pos.CENTER_LEFT);
 
         // Ajouter les labels pour le joueur courant et le tour courant
-        currentPlayerLabel = new Label("Joueur 1");
-        currentPlayerLabel.setFont(Font.font(20));
-        currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
-
-        currentRoundLabel = new Label("Tour 1");
+        currentRoundLabel = new Label("Tour " + round);
         currentRoundLabel.setFont(Font.font(20));
         currentRoundLabel.setTextAlignment(TextAlignment.CENTER);
+
+        currentPlayerLabel = new Label("Joueur " + playerPlaying);
+        currentPlayerLabel.setFont(Font.font(20));
+        currentPlayerLabel.setTextFill(colorList[playerPlaying - 1]);
+        currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
+
 
         // Ajouter les labels pour les scores de chaque joueur
         Label scoreTitleLabel = new Label("Scores :");
@@ -155,7 +160,7 @@ public class Board extends Application {
         scoreTitleLabel.setTextAlignment(TextAlignment.CENTER);
 
         // Ajouter les éléments de scoreBox
-        scoreBox.getChildren().addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel);
+        scoreBox.getChildren().addAll(currentRoundLabel, currentPlayerLabel, scoreTitleLabel);
 
         for (int i = 0; i < numberOfPlayers; i++) {
             HBox playerScoreBox = new HBox();
