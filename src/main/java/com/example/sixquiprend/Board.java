@@ -1,8 +1,5 @@
 package com.example.sixquiprend;
 
-import com.example.sixquiprend.Jeu.Card;
-import com.example.sixquiprend.Jeu.Game;
-import com.example.sixquiprend.Jeu.Player;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -132,7 +129,7 @@ public class Board extends Application {
                 for (int j = 0; j < 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(colorList[(i * 3) + (j + 1) - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))))
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[(i * 3) + j], BorderStrokeStyle.SOLID, null, new BorderWidths(1))))
                     ;
                     cardHBox.getChildren().add(cardPane);
                 }
@@ -214,11 +211,12 @@ public class Board extends Application {
 
 
         //TODO Remplir la main du joueur
-        Game game = new Game(numberOfPlayers);
-        Player player = game.getPlayers()[playerPlaying - 1];
-        Card[] handCards = player.getHandCards();
+//        Game game = new Game(numberOfPlayers);
+//        Player player = game.getPlayers()[playerPlaying - 1];
+//        Card[] handCards = player.getHandCards();
         for (int i = 0; i < 10; i++) {
-            addCardInHand(i, handCards[i].getNumber() + ".png");
+            addCardInHand(i, i + 20 + ".png");
+//            addCardInHand(i, handCards[i].getNumber() + ".png");
         }
 
 
@@ -246,7 +244,7 @@ public class Board extends Application {
                 System.out.println("Image clicked");
                 System.out.println("Card clicked: x = " + x + ", y = " + y);
                 // ATTENTION X = Colonnes, Y = Lignes.
-                changeCardPosition(x, 0, (playerPlaying - 1) / 3, playerPlaying % 3 - 1, true);
+                changeCardPosition(x, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
                 // Désactiver les clics sur les images
                 canClickArrow = true;
                 // Désactiver les clics sur les flèches
