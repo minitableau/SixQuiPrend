@@ -27,7 +27,12 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
-    private int numberOfPlayers = 4;
+    private int numberOfPlayers = 10;
+
+    private int playerPlaying = 2;
+    private int round = 1;
+    private final Color[] colorList = new Color[]{Color.BLUE, Color.PURPLE, Color.DEEPPINK, Color.ORANGE, Color.GREEN, Color.YELLOWGREEN, Color.BROWN, Color.GRAY, Color.MAGENTA, Color.DARKCYAN};
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -60,7 +65,7 @@ public class Board extends Application {
         for (int i = 0; i < 10; i++) {
             StackPane cardPane = new StackPane();
             cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-            cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+            cardPane.setBorder(new Border(new BorderStroke(colorList[playerPlaying - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
             cardBarBox.getChildren().add(cardPane);
         }
 
@@ -85,8 +90,6 @@ public class Board extends Application {
 
         }
 
-
-        //TODO
         VBox playingCards = new VBox();
         playingCards.setPadding(new Insets(10, 10, 10, 10));
         playingCards.setSpacing(10);
@@ -104,26 +107,23 @@ public class Board extends Application {
                 for (int j = 0; j < numberOfPlayers % 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[numberOfPlayers - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
                     cardHBox.getChildren().add(cardPane);
                 }
             } else {
                 for (int j = 0; j < 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[(i * 3) + (j + 1) - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))))
+                    ;
                     cardHBox.getChildren().add(cardPane);
                 }
             }
         }
 
         // Créer la HBox qui contiendra les boutons d'action du joueur
-        playerActionsBox = new
-
-                HBox();
-        playerActionsBox.setPadding(new
-
-                Insets(10, 10, 10, 10));
+        playerActionsBox = new HBox();
+        playerActionsBox.setPadding(new Insets(10, 10, 10, 10));
         playerActionsBox.setSpacing(10);
         playerActionsBox.setAlignment(Pos.CENTER);
 
@@ -138,69 +138,78 @@ public class Board extends Application {
 //        mainPane.setTop(playerActionsBox);
 
         // Créer la VBox qui contiendra la barre de score des joueurs
-        scoreBox = new
-
-                VBox();
-        scoreBox.setPadding(new
-
-                Insets(10, 10, 10, 10));
+        scoreBox = new VBox();
+        scoreBox.setPadding(new Insets(10, 10, 10, 10));
         scoreBox.setSpacing(10);
         scoreBox.setAlignment(Pos.CENTER_LEFT);
 
         // Ajouter les labels pour le joueur courant et le tour courant
-        currentPlayerLabel = new
-
-                Label("Joueur 1");
-        currentPlayerLabel.setFont(Font.font(20));
-        currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
-
-        currentRoundLabel = new
-
-                Label("Tour 1");
+        currentRoundLabel = new Label("Tour " + round);
         currentRoundLabel.setFont(Font.font(20));
         currentRoundLabel.setTextAlignment(TextAlignment.CENTER);
+
+        currentPlayerLabel = new Label("Joueur " + playerPlaying);
+        currentPlayerLabel.setFont(Font.font(20));
+        currentPlayerLabel.setTextFill(colorList[playerPlaying - 1]);
+        currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
+
 
         // Ajouter les labels pour les scores de chaque joueur
         Label scoreTitleLabel = new Label("Scores :");
         scoreTitleLabel.setFont(Font.font(20));
         scoreTitleLabel.setTextAlignment(TextAlignment.CENTER);
 
-        HBox playerScoreBox1 = new HBox();
-        playerScoreBox1.setSpacing(10);
-        playerScoreBox1.setAlignment(Pos.CENTER_LEFT);
+        // Ajouter les éléments de scoreBox
+        scoreBox.getChildren().addAll(currentRoundLabel, currentPlayerLabel, scoreTitleLabel);
 
-        Label player1NameLabel = new Label("Joueur 1 :");
-        player1NameLabel.setFont(Font.font(16));
-        player1NameLabel.setTextFill(Color.BLUE);
+        for (int i = 0; i < numberOfPlayers; i++) {
+            HBox playerScoreBox = new HBox();
+            playerScoreBox.setSpacing(10);
+            playerScoreBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label player1ScoreLabel = new Label("0");
-        player1ScoreLabel.setFont(Font.font(16));
-        player1ScoreLabel.setTextFill(Color.BLUE);
+            Label playerNameLabel = new Label("Joueur " + (i + 1) + " :");
+            playerNameLabel.setFont(Font.font(16));
+            playerNameLabel.setTextFill(colorList[i]);
 
-        playerScoreBox1.getChildren().
+            Label playerScoreLabel = new Label("0");
+            playerScoreLabel.setFont(Font.font(16));
+            playerScoreLabel.setTextFill(colorList[i]);
 
-                addAll(player1NameLabel, player1ScoreLabel);
+            playerScoreBox.getChildren().addAll(playerNameLabel, playerScoreLabel);
+            scoreBox.getChildren().add(playerScoreBox);
+        }
 
-        HBox playerScoreBox2 = new HBox();
-        playerScoreBox2.setSpacing(10);
-        playerScoreBox2.setAlignment(Pos.CENTER_LEFT);
+//        HBox playerScoreBox1 = new HBox();
+//        playerScoreBox1.setSpacing(10);
+//        playerScoreBox1.setAlignment(Pos.CENTER_LEFT);
+//
+//        Label player1NameLabel = new Label("Joueur 1 :");
+//        player1NameLabel.setFont(Font.font(16));
+//        player1NameLabel.setTextFill(Color.BLUE);
+//
+//        Label player1ScoreLabel = new Label("0");
+//        player1ScoreLabel.setFont(Font.font(16));
+//        player1ScoreLabel.setTextFill(Color.BLUE);
+//
+//        playerScoreBox1.getChildren().addAll(player1NameLabel, player1ScoreLabel);
 
-        Label player2NameLabel = new Label("Joueur 2 :");
-        player2NameLabel.setFont(Font.font(16));
-        player2NameLabel.setTextFill(Color.RED);
-
-        Label player2ScoreLabel = new Label("0");
-        player2ScoreLabel.setFont(Font.font(16));
-        player2ScoreLabel.setTextFill(Color.RED);
-
-        playerScoreBox2.getChildren().
-
-                addAll(player2NameLabel, player2ScoreLabel);
+//        HBox playerScoreBox2 = new HBox();
+//        playerScoreBox2.setSpacing(10);
+//        playerScoreBox2.setAlignment(Pos.CENTER_LEFT);
+//
+//        Label player2NameLabel = new Label("Joueur 2 :");
+//        player2NameLabel.setFont(Font.font(16));
+//        player2NameLabel.setTextFill(Color.RED);
+//
+//        Label player2ScoreLabel = new Label("0");
+//        player2ScoreLabel.setFont(Font.font(16));
+//        player2ScoreLabel.setTextFill(Color.RED);
+//
+//        playerScoreBox2.getChildren().addAll(player2NameLabel, player2ScoreLabel);
 
         // Ajouter les éléments de scoreBox
-        scoreBox.getChildren().
+//        scoreBox.getChildren().addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel, playerScoreBox1, playerScoreBox2);
 
-                addAll(currentPlayerLabel, currentRoundLabel, scoreTitleLabel, playerScoreBox1, playerScoreBox2);
 
         // Ajouter la VBox de scores au BorderPane principal
         mainPane.setRight(scoreBox);
