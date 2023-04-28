@@ -201,27 +201,26 @@ public class Board extends Application {
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
         primaryStage.show();
-        addCard(1, 1, "1.png");
-        addCardInHand(1, "2.png");
+
+        // TODO Remplir le debut du plateau
+        addCard(0, 0, "1.png");
+        addCard(1, 0, "55.png");
+        addCard(2, 0, "32.png");
+        addCard(3, 0, "19.png");
+
+        //TODO Remplir la main du joueur
+        for (int i = 0; i < 10; i++) {
+            addCardInHand(i, i + 20 + ".png");
+        }
 
 
     }
-
-//    private void addCardToBar(int index, Card card) {
-//        StackPane cardPane = (StackPane) cardBarBox.getChildren().get(index);
-//        // Créer un Label pour afficher le numéro de la carte
-//        Label cardLabel = new Label(String.valueOf(card.getNumber()));
-//        cardLabel.setFont(Font.font(20));
-//        // Ajouter le Label au StackPane
-//        cardPane.getChildren().add(cardLabel);
-//    }
-
 
     private void addCard(int i, int j, String imageName) {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
         URL imageUrl = Board.class.getResource("/images/cards/");
         ImageView imageView = new ImageView(new Image(imageUrl + imageName));
-  //        setOnClickAction(imageView, i, j);
+        //        setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
     }
 
@@ -239,7 +238,7 @@ public class Board extends Application {
                 System.out.println("Image clicked");
                 System.out.println("Card clicked: x = " + x + ", y = " + y);
                 // ATTENTION X = Colonnes, Y = Lignes.
-                changeCardPosition(x, 0,(playerPlaying - 1) / 3 , playerPlaying % 3 - 1);
+                changeCardPosition(x, 0, (playerPlaying - 1) / 3, playerPlaying % 3 - 1, true);
                 // Désactiver les clics sur les images
                 canClickArrow = true;
                 // Désactiver les clics sur les flèches
@@ -258,7 +257,7 @@ public class Board extends Application {
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
         // Récupère l'image à partir de la StackPane
         ImageView imageView = (ImageView) cardPane.getChildren().get(0);
-        if (turn == true) {
+        if (turn) {
             flipImage(imageView);
         }
         // Calcule la distance horizontale et verticale à parcourir
