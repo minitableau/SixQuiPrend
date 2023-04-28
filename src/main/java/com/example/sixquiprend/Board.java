@@ -114,7 +114,6 @@ public class Board extends Application {
                     cardPane.setBorder(new Border(new BorderStroke(colorList[(i * 3) + (j + 1) - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))))
                     ;
                     cardHBox.getChildren().add(cardPane);
-
                 }
             }
         }
