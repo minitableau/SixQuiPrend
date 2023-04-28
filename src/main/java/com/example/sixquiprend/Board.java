@@ -38,7 +38,7 @@ public class Board extends Application {
     private Label currentRoundLabel;
     private int numberOfPlayers = 10;
 
-    private int playerPlaying = 2;
+    private int playerPlaying = 5;
     private int round = 1;
     private VBox gameCardBarBox;
     private HBox cardBarBox;
@@ -226,7 +226,8 @@ public class Board extends Application {
 
     private void addCardInHand(int i, String imageName) {
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
-        ImageView imageView = new ImageView(new Image("file:D:/Projets/Java/SixQuiPrend/src/main/resources/images/cards/" + imageName));
+        URL imageUrl = Board.class.getResource("/images/cards/");
+        ImageView imageView = new ImageView(new Image(imageUrl + imageName));
         setOnClickAction(imageView, i, 0);
         cardPane.getChildren().add(imageView);
     }
