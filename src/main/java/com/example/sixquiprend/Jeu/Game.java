@@ -1,5 +1,13 @@
 package com.example.sixquiprend.Jeu;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+
+import java.security.cert.PolicyNode;
 import java.util.Random;
 
 public class Game {
@@ -7,6 +15,7 @@ public class Game {
     private Player[] players;
     private Card[] deckCards;
     private int roundNumber;
+    private VBox gameCardBarBox;
 
     public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
@@ -14,11 +23,18 @@ public class Game {
         this.deckCards = createDeck();
         this.roundNumber = 1;
 
+
         for (int i = 0; i < numberOfPlayers; i++) {
             players[i] = new Player("Player " + (i + 1));
-            dealHandCards(players[i]);
         }
+        printRemainingCards();
+        dealHandCards();
+
+        printPlayersCards();
+
+        printRemainingCards();
     }
+
 
     private Card[] createDeck() {
         Card[] deck = new Card[104];
@@ -56,18 +72,49 @@ public class Game {
         }
     }
 
-    private void dealHandCards(Player player) {
-        for (int i = 0; i < 10; i++) {
-            Card card = deckCards[i];
-            player.addToHand(card);
-            deckCards[i] = null;
+    private void dealHandCards() {
+        int numberOfCardsPerPlayer = 10;
+        int cardIndex = 0;
+        for (int i = 0; i < numberOfPlayers; i++) {
+            for (int j = 0; j < numberOfCardsPerPlayer; j++) {
+                Card card = deckCards[cardIndex];
+                players[i].addToHand(card);
+                deckCards[cardIndex] = null;
+                cardIndex++;
+            }
+
         }
     }
+
 
     public Player[] getPlayers() {
         return players;
     }
 
+    public void printPlayersCards() {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            Player player = players[i];
+            System.out.println("Joueur " + (i + 1) + " :");
+            Card[] handCards = player.getHandCards();
+            for (int j = 0; j < handCards.length; j++) {
+                Card card = handCards[j];
+                System.out.println("- Carte " + (j + 1) + " : " + card.getNumber() + " (valeur : " + card.getPoints() + ")");
+            }
+            System.out.println();
+
+        }
+
+    }
+    public void printRemainingCards() {
+        System.out.println("Cartes restantes dans le paquet :");
+        int remainingCards = 0;
+        for (int i = 0; i < deckCards.length; i++) {
+            if (deckCards[i] != null) {
+                remainingCards++;
+                System.out.println("- Carte " + remainingCards + " : " + deckCards[i].getNumber() + " (valeur : " + deckCards[i].getPoints() + ")");
+            }
+        }
+    }
+
 
 }
-

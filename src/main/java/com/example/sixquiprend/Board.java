@@ -1,7 +1,11 @@
 package com.example.sixquiprend;
 
+import com.example.sixquiprend.Jeu.Card;
+import com.example.sixquiprend.Jeu.Game;
+import com.example.sixquiprend.Jeu.Player;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -38,7 +42,7 @@ public class Board extends Application {
     private Label currentRoundLabel;
     private int numberOfPlayers = 5;
 
-    private int playerPlaying = 3;
+    private int playerPlaying = 1;
     private int round = 1;
     private VBox gameCardBarBox;
     private HBox cardBarBox;
@@ -211,12 +215,12 @@ public class Board extends Application {
 
 
         //TODO Remplir la main du joueur
-//        Game game = new Game(numberOfPlayers);
-//        Player player = game.getPlayers()[playerPlaying - 1];
-//        Card[] handCards = player.getHandCards();
+        Game game = new Game(numberOfPlayers);
+        Player player = game.getPlayers()[playerPlaying - 1];
+        Card[] handCards = player.getHandCards();
         for (int i = 0; i < 10; i++) {
-            addCardInHand(i, i + 20 + ".png");
-//            addCardInHand(i, handCards[i].getNumber() + ".png");
+
+            addCardInHand(i, handCards[i].getNumber() + ".png");
         }
 
 
@@ -257,47 +261,50 @@ public class Board extends Application {
     }
 
     public void changeCardPosition(int x, int y, int newX, int newY, boolean turn) {
-
-        // Obtient la StackPane à la position x, y
-//        StackPane cardPane = (StackPane) ((HBox) playingCards.getChildren().get(x)).getChildren().get(y);
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
-        // Récupère l'image à partir de la StackPane
         ImageView imageView = (ImageView) cardPane.getChildren().get(0);
+
+        cardPane.getChildren().remove(imageView);
+
+        StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(newX)).getChildren().get(newY);
+        // Get the start and end coordinates
+        Bounds startBounds = cardPane.localToScene(cardPane.getBoundsInLocal());
+        Bounds endBounds = newCardPane.localToScene(newCardPane.getBoundsInLocal());
+        // Create a new ImageView to animate
+        ImageView animatedImageView = new ImageView(imageView.getImage());
+
+        // Flip the image before creating the animated ImageView
         if (turn) {
-            flipImage(imageView);
+            flipImage(animatedImageView);
         }
-        // Calcule la distance horizontale et verticale à parcourir
-        double deltaX = (newX - x) * CARD_BAR_WIDTH;
-        double deltaY = (newY - y) * CARD_BAR_HEIGHT;
 
-        // Crée une transition de translation pour déplacer l'image
-        TranslateTransition transition = new TranslateTransition(Duration.millis(500), imageView);
-        // - car la carte va vers le haut
-        transition.setToX(imageView.getTranslateX() - deltaX);
-        transition.setToY(imageView.getTranslateY() - deltaY);
-        transition.setInterpolator(Interpolator.EASE_BOTH);
+        animatedImageView.setX(startBounds.getMinX());
+        animatedImageView.setY(startBounds.getMinY());
+        // Add the animated ImageView to the scene
+        Pane root = (Pane) cardBarBox.getScene().getRoot();
+        root.getChildren().add(animatedImageView);
 
-        // Ajoute un événement pour déplacer l'image à la fin de la transition
-        transition.setOnFinished(event -> {
-            // Supprime l'image de la StackPane
-            cardPane.getChildren().remove(imageView);
-            // Obtient la nouvelle StackPane où l'image doit être placée
-            StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(newX)).getChildren().get(newY);
-            // Ajoute l'image à la nouvelle StackPane
+        // Create the translation transition
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(2), animatedImageView);
+        tt.setToX(endBounds.getMinX() - startBounds.getMinX());
+        tt.setToY(endBounds.getMinY() - startBounds.getMinY());
+
+        tt.setOnFinished(event -> {
+            root.getChildren().remove(imageView);
+            imageView.setRotate(0); // Reset rotation to 0 degrees
             newCardPane.getChildren().add(imageView);
-            // Réinitialise les propriétés de translation de l'image
-            imageView.setTranslateX(0);
-            imageView.setTranslateY(0);
-            System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
         });
-        transition.play();
-        System.out.println("Moving card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
-    }
+
+        // Start the transition
+        tt.play();
+        playerPlaying = (playerPlaying % numberOfPlayers) + 1;
+
+        System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
+    };
 
     public void changeCardPosition(int x, int y, int newX, int newY) {
         changeCardPosition(x, y, newX, newY, false);
     }
-
     public void flipImage(ImageView imageView) {
         RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.5), imageView);
         rotateTransition.setAxis(Rotate.Y_AXIS);
@@ -332,5 +339,13 @@ public class Board extends Application {
         });
         parallelTransition.play();
     }
+
+
+
+
+
+
+
+
 
 }

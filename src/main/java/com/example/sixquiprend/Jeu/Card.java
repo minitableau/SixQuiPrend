@@ -16,4 +16,5 @@ public class Card {
     public int getPoints() {
         return points;
     }
+
 }
