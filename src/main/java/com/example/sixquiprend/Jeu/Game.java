@@ -17,17 +17,17 @@ public class Game {
     private int roundNumber;
     private VBox gameCardBarBox;
 
+
+
     public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new Player[numberOfPlayers];
         this.deckCards = createDeck();
         this.roundNumber = 1;
 
-
         for (int i = 0; i < numberOfPlayers; i++) {
             players[i] = new Player("Player " + (i + 1));
         }
-        printRemainingCards();
         dealHandCards();
 
         printPlayersCards();

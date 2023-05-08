@@ -41,7 +41,6 @@ public class Arrow extends Application {
         // Gérer l'événement de clic sur la flèche
         arrow.setOnMouseClicked(event -> {
             System.out.println("Im clicked");
-
         });
 
 
