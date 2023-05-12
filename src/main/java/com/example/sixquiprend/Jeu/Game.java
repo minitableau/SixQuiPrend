@@ -8,12 +8,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.security.cert.PolicyNode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Game {
     private int numberOfPlayers;
     private Player[] players;
-    private Card[] deckCards;
+    private static Card[] deckCards;
     private int roundNumber;
     private VBox gameCardBarBox;
 
@@ -29,9 +31,7 @@ public class Game {
             players[i] = new Player("Player " + (i + 1));
         }
         dealHandCards();
-
         printPlayersCards();
-
         printRemainingCards();
     }
 
@@ -115,6 +115,17 @@ public class Game {
             }
         }
     }
+
+    public static List<Card> getRemainingCards() {
+        List<Card> remainingCards = new ArrayList<>();
+        for (int i = 0; i < deckCards.length; i++) {
+            if (deckCards[i] != null) {
+                remainingCards.add(deckCards[i]);
+            }
+        }
+        return remainingCards;
+    }
+
 
 
 }

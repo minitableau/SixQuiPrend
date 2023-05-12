@@ -8,7 +8,6 @@ import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -23,7 +22,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Board extends Application {
 
@@ -40,8 +42,8 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
-    private int numberOfPlayers = 5;
-    private static int playerPlaying = 1;
+    private int numberOfPlayers = 3;
+    private int playerPlaying = 1;
 
     private int round = 1;
     private VBox gameCardBarBox;
@@ -60,7 +62,10 @@ public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        if (playerPlaying > numberOfPlayers) {
+            playerPlaying = playerPlaying % numberOfPlayers;
+        }
+//        playerPlaying++;
         Player[] players = game.getPlayers();
 
 
@@ -91,7 +96,7 @@ public class Board extends Application {
 
 // Ajouter les emplacements de carte à la HBox
         for (int i = 0; i < 10; i++) {
-            final int playerIndex = playerPlaying - 1; // définir une variable finale pour le joueur courant
+            int playerIndex = playerPlaying - 1; // définir une variable finale pour le joueur courant
             StackPane cardPane = new StackPane();
             cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
             cardPane.setBorder(new Border(new BorderStroke(colorList[playerIndex], BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -104,7 +109,9 @@ public class Board extends Application {
                 System.out.println("Joueur " + (playerIndex + 1) + " a cliqué sur la carte " + card.getNumber() + " (valeur : " + card.getPoints() + ")");
                 String info = "" + (playerIndex + 1) + " : " + card.getNumber() + " : " + card.getPoints() + "";
                 clickedCardInfoList.add(info);
-System.out.println(clickedCardInfoList);
+                System.out.println(clickedCardInfoList);
+                //TODO REMOVE CARD JOUé
+//                Player.removeCardFromHand(players[playerIndex], cardIndex);
             });
 
         }
@@ -133,7 +140,6 @@ System.out.println(clickedCardInfoList);
         playingCards = new VBox();
         playingCards.setPadding(new Insets(10, 10, 10, 10));
         playingCards.setSpacing(10);
-
 
 
         // Ajouter les HBox des emplacements des cartes au BorderPane principal
@@ -230,23 +236,35 @@ System.out.println(clickedCardInfoList);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // TODO Remplir le debut du plateau
-        addCard(0, 0, "1.png");
-        addCard(1, 0, "55.png");
-        addCard(2, 0, "32.png");
-        addCard(3, 0, "19.png");
-
-
         //TODO Remplir la main du joueur
 
+//        Player player = game.getPlayers()[playerPlaying - 1];
+//        Card[] handCards = player.getHandCards();
+//        for (int i = 0; i < 10; i++) {
+//            addCardInHand(i, handCards[i].getNumber() + ".png");
+//        }
+        fullHand();
+
+
+        // Remplir le premier tableau (4 cartes à gauche)
+        for (int i = 0; i < 4; i++) {
+            addCard(i, 0, Game.getRemainingCards().get(i).getNumber() + ".png");
+            //TODO les 4 premieres cartes son a enlever du jeu dcp.
+        }
+
+    }
+
+    private void fullHand() {
         Player player = game.getPlayers()[playerPlaying - 1];
         Card[] handCards = player.getHandCards();
         for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            cardPane.setBorder(new Border(new BorderStroke(colorList[playerPlaying - 1], BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
+        }
+        for (int i = 0; i < handCards.length; i++) {
             addCardInHand(i, handCards[i].getNumber() + ".png");
         }
-
-
     }
 
     private void addCard(int i, int j, String imageName) {
@@ -255,9 +273,7 @@ System.out.println(clickedCardInfoList);
         ImageView imageView = new ImageView(new Image(imageUrl + imageName));
         //        setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
-
     }
-
 
 
     private void addCardInHand(int i, String imageName) {
@@ -331,10 +347,10 @@ System.out.println(clickedCardInfoList);
     }
 
 
-
     public void changeCardPosition(int x, int y, int newX, int newY) {
         changeCardPosition(x, y, newX, newY, false);
     }
+
     public void flipImage(ImageView imageView) {
         RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.5), imageView);
         rotateTransition.setAxis(Rotate.Y_AXIS);
@@ -366,11 +382,14 @@ System.out.println(clickedCardInfoList);
 
             ParallelTransition parallelTransition2 = new ParallelTransition(rotateTransition2, scaleTransition2);
             parallelTransition2.play();
+
+            playerPlaying++;
+            fullHand();
         });
         parallelTransition.play();
     }
 
-        }
+}
 
 
 

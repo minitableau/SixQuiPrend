@@ -33,4 +33,22 @@ public class Player {
         }
     }
 
+//    public static void removeCardFromHand(Player player, int index) {
+//        if (index < 0 || index >= player.getHandCards().length) {
+//            return;
+//        }
+//        Card[] hand = player.getHandCards();
+//        Card[] newHand = new Card[hand.length - 1];
+//
+//        for (int i = 0; i < hand.length; i++) {
+//            if (i == index) {
+//                continue;
+//            }
+//            newHand[i] = hand[i];
+//        }
+//        handCards = newHand;
+//
+//    }
+
+
 }
