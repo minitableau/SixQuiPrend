@@ -13,23 +13,18 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private int numberOfPlayers;
-    private Player[] players;
+    public static List<Player> players;;
     private static Card[] deckCards;
     private int roundNumber;
     private VBox gameCardBarBox;
 
 
 
-    public Game(int numberOfPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
-        this.players = new Player[numberOfPlayers];
+    public Game(List<Player> players) {
+        Game.players = players;
         this.deckCards = createDeck();
         this.roundNumber = 1;
 
-        for (int i = 0; i < numberOfPlayers; i++) {
-            players[i] = new Player("Player " + (i + 1));
-        }
         dealHandCards();
         printPlayersCards();
         printRemainingCards();
@@ -75,10 +70,10 @@ public class Game {
     private void dealHandCards() {
         int numberOfCardsPerPlayer = 10;
         int cardIndex = 0;
-        for (int i = 0; i < numberOfPlayers; i++) {
+        for (Player player : players) {
             for (int j = 0; j < numberOfCardsPerPlayer; j++) {
                 Card card = deckCards[cardIndex];
-                players[i].addToHand(card);
+                player.addToHand(card);
                 deckCards[cardIndex] = null;
                 cardIndex++;
             }
@@ -86,14 +81,9 @@ public class Game {
         }
     }
 
-
-    public Player[] getPlayers() {
-        return players;
-    }
-
     public void printPlayersCards() {
-        for (int i = 0; i < numberOfPlayers; i++) {
-            Player player = players[i];
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
             System.out.println("Joueur " + (i + 1) + " :");
             Card[] handCards = player.getHandCards();
             for (int j = 0; j < handCards.length; j++) {
@@ -108,19 +98,19 @@ public class Game {
     public void printRemainingCards() {
         System.out.println("Cartes restantes dans le paquet :");
         int remainingCards = 0;
-        for (int i = 0; i < deckCards.length; i++) {
-            if (deckCards[i] != null) {
+        for (Card deckCard : deckCards) {
+            if (deckCard != null) {
                 remainingCards++;
-                System.out.println("- Carte " + remainingCards + " : " + deckCards[i].getNumber() + " (valeur : " + deckCards[i].getPoints() + ")");
+                System.out.println("- Carte " + remainingCards + " : " + deckCard.getNumber() + " (valeur : " + deckCard.getPoints() + ")");
             }
         }
     }
 
     public static List<Card> getRemainingCards() {
         List<Card> remainingCards = new ArrayList<>();
-        for (int i = 0; i < deckCards.length; i++) {
-            if (deckCards[i] != null) {
-                remainingCards.add(deckCards[i]);
+        for (Card deckCard : deckCards) {
+            if (deckCard != null) {
+                remainingCards.add(deckCard);
             }
         }
         return remainingCards;

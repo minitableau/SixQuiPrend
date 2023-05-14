@@ -1,16 +1,31 @@
 package com.example.sixquiprend.Jeu;
 
+import java.util.Arrays;
+
 public class Player {
+    private final String type;
     private String name;
     private Card[] handCards;
+    private boolean[] isCardPlayed;
 
-    public Player(String name) {
+    public Player(String name,String type) {
         this.name = name;
+        this.type = type;
         this.handCards = new Card[10];
+        this.isCardPlayed = new boolean[10];
+        Arrays.fill(isCardPlayed, false);
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean[] getIsCardPlayed() {
+        return isCardPlayed;
+    }
+
+    public void setIsCardPlayed(int isCardPlayed) {
+        this.isCardPlayed[isCardPlayed] = true;
     }
 
     public void setName(String name) {

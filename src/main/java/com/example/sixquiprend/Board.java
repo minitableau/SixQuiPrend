@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.sixquiprend.Jeu.Game.players;
+
 public class Board extends Application {
 
 
@@ -42,7 +44,6 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
-    private int numberOfPlayers = 3;
     private int playerPlaying = 1;
 
     private int round = 1;
@@ -55,19 +56,11 @@ public class Board extends Application {
     private String name;
 
     private List<String> clickedCardInfoList = new ArrayList<>();
-
-
-    Game game = new Game(numberOfPlayers);
-
+    private StackPane cardPane;
+    private int clickedIndex;
 
     @Override
     public void start(Stage primaryStage) {
-        if (playerPlaying > numberOfPlayers) {
-            playerPlaying = playerPlaying % numberOfPlayers;
-        }
-//        playerPlaying++;
-        Player[] players = game.getPlayers();
-
 
         // Créer le BorderPane principal qui contiendra les éléments du jeu
         mainPane = new BorderPane();
@@ -97,23 +90,11 @@ public class Board extends Application {
 // Ajouter les emplacements de carte à la HBox
         for (int i = 0; i < 10; i++) {
             int playerIndex = playerPlaying - 1; // définir une variable finale pour le joueur courant
-            StackPane cardPane = new StackPane();
+            cardPane = new StackPane();
+            cardPane.setId("cardPane_" + i); // Ajoutez un identifiant unique
             cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
             cardPane.setBorder(new Border(new BorderStroke(colorList[playerIndex], BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             cardBarBox.getChildren().add(cardPane);
-
-            // Récupérer la carte correspondante au clic
-            final int cardIndex = i;
-            cardPane.setOnMouseClicked(event -> {
-                Card card = players[playerIndex].getHandCards()[cardIndex];
-                System.out.println("Joueur " + (playerIndex + 1) + " a cliqué sur la carte " + card.getNumber() + " (valeur : " + card.getPoints() + ")");
-                String info = "" + (playerIndex + 1) + " : " + card.getNumber() + " : " + card.getPoints() + "";
-                clickedCardInfoList.add(info);
-                System.out.println(clickedCardInfoList);
-                //TODO REMOVE CARD JOUé
-//                Player.removeCardFromHand(players[playerIndex], cardIndex);
-            });
-
         }
 
         for (int i = 0; i < 4; i++) {
@@ -146,16 +127,16 @@ public class Board extends Application {
         mainPane.setCenter(playingCards);
 
         // On soustrait 1 au nombre de joueur on divise par le  de case que l'on souhaite par ligne et on ajoute 1
-        for (int i = 0; i <= (numberOfPlayers - 1) / 3; i++) {
+        for (int i = 0; i <= (players.size() - 1) / 3; i++) {
             HBox cardHBox = new HBox();
             cardHBox.setSpacing(10);
             playingCards.getChildren().add(cardHBox);
             cardHBox.setAlignment(Pos.CENTER_RIGHT);
-            if (i == (numberOfPlayers - 1) / 3 && numberOfPlayers % 3 != 0) {
-                for (int j = 0; j < numberOfPlayers % 3; j++) {
+            if (i == (players.size() - 1) / 3 && players.size() % 3 != 0) {
+                for (int j = 0; j < players.size() % 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(colorList[numberOfPlayers - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[players.size() - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
                     cardHBox.getChildren().add(cardPane);
                 }
             } else {
@@ -175,16 +156,6 @@ public class Board extends Application {
         playerActionsBox.setSpacing(10);
         playerActionsBox.setAlignment(Pos.CENTER);
 
-//        // Ajouter les boutons d'action au HBox
-//        Button playCardButton = new Button("Jouer une carte");
-//        Button passButton = new Button("Passer");
-//        Button takeRowButton = new Button("Prendre une rangée");
-//
-//        playerActionsBox.getChildren().addAll(playCardButton, passButton, takeRowButton);
-//
-//        // Ajouter la HBox des actions de joueur au BorderPane principal
-//        mainPane.setTop(playerActionsBox);
-
         // Créer la VBox qui contiendra la barre de score des joueurs
         scoreBox = new VBox();
         scoreBox.setPadding(new Insets(10, 10, 10, 10));
@@ -196,7 +167,7 @@ public class Board extends Application {
         currentRoundLabel.setFont(Font.font(20));
         currentRoundLabel.setTextAlignment(TextAlignment.CENTER);
 
-        currentPlayerLabel = new Label("Joueur " + playerPlaying);
+        currentPlayerLabel = new Label(players.get(playerPlaying - 1).getName());
         currentPlayerLabel.setFont(Font.font(20));
         currentPlayerLabel.setTextFill(colorList[playerPlaying - 1]);
         currentPlayerLabel.setTextAlignment(TextAlignment.CENTER);
@@ -210,12 +181,12 @@ public class Board extends Application {
         // Ajouter les éléments de scoreBox
         scoreBox.getChildren().addAll(currentRoundLabel, currentPlayerLabel, scoreTitleLabel);
 
-        for (int i = 0; i < numberOfPlayers; i++) {
+        for (int i = 0; i < players.size(); i++) {
             HBox playerScoreBox = new HBox();
             playerScoreBox.setSpacing(10);
             playerScoreBox.setAlignment(Pos.CENTER_LEFT);
 
-            Label playerNameLabel = new Label("Joueur " + (i + 1) + " :");
+            Label playerNameLabel = new Label(players.get(i).getName() + " :");
             playerNameLabel.setFont(Font.font(16));
             playerNameLabel.setTextFill(colorList[i]);
 
@@ -236,13 +207,7 @@ public class Board extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        //TODO Remplir la main du joueur
-
-//        Player player = game.getPlayers()[playerPlaying - 1];
-//        Card[] handCards = player.getHandCards();
-//        for (int i = 0; i < 10; i++) {
-//            addCardInHand(i, handCards[i].getNumber() + ".png");
-//        }
+        // Remplir la main du joueur
         fullHand();
 
 
@@ -255,23 +220,29 @@ public class Board extends Application {
     }
 
     private void fullHand() {
-        Player player = game.getPlayers()[playerPlaying - 1];
+        Player player = players.get(playerPlaying - 1);
         Card[] handCards = player.getHandCards();
+
+        // Réinitialiser les emplacements de carte du joueur
         for (int i = 0; i < 10; i++) {
             StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            cardPane.getChildren().clear(); // Retirer les cartes précédentes
             cardPane.setBorder(new Border(new BorderStroke(colorList[playerPlaying - 1], BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-
         }
+
+        // Distribuer les cartes restantes de la main initiale du joueur
         for (int i = 0; i < handCards.length; i++) {
-            addCardInHand(i, handCards[i].getNumber() + ".png");
+            if (!players.get(playerPlaying - 1).getIsCardPlayed()[i]) {
+                addCardInHand(i, handCards[i].getNumber() + ".png");
+            }
         }
     }
+
 
     private void addCard(int i, int j, String imageName) {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
         URL imageUrl = Board.class.getResource("/images/cards/");
         ImageView imageView = new ImageView(new Image(imageUrl + imageName));
-        //        setOnClickAction(imageView, i, j);
         cardPane.getChildren().add(imageView);
     }
 
@@ -285,21 +256,26 @@ public class Board extends Application {
     }
 
     public void setOnClickAction(ImageView imageView, int x, int y) {
-
+        StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
         imageView.setOnMouseClicked(event -> {
             if (!canClickArrow) {
-                System.out.println("Image clicked");
-                System.out.println("Card clicked: x = " + x + ", y = " + y);
-                // ATTENTION X = Colonnes, Y = Lignes.
-                changeCardPosition(x, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
-                // Désactiver les clics sur les images
-                canClickArrow = true;
-                // Désactiver les clics sur les flèches
-                arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
-                canClickArrow = false;
-            }
-            ;
+                if (!canClickArrow && !players.get(playerPlaying - 1).getIsCardPlayed()[x]) {
+                    String cardPaneId = cardPane.getId(); // Récupérez l'identifiant de la StackPane
+                    clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+                    System.out.println("CardPane clicked: " + clickedIndex);
 
+                    System.out.println("Image clicked");
+                    System.out.println("Card clicked: x = " + x + ", y = " + y);
+                    // ATTENTION X = Colonnes, Y = Lignes.
+                    changeCardPosition(x, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+                    // Désactiver les clics sur les images
+                    canClickArrow = true;
+                    // Désactiver les clics sur les flèches
+                    arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+                    canClickArrow = false;
+                }
+                ;
+            }
         });
     }
 
@@ -341,6 +317,10 @@ public class Board extends Application {
 
         // Start the transition
         tt.play();
+
+        players.get(playerPlaying - 1).setIsCardPlayed(x);
+
+
         System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
 
 
@@ -383,8 +363,33 @@ public class Board extends Application {
             ParallelTransition parallelTransition2 = new ParallelTransition(rotateTransition2, scaleTransition2);
             parallelTransition2.play();
 
+            //Mise en liste de la carte cliqué
+            Player player = players.get(playerPlaying - 1);
+            Card[] handCards = player.getHandCards();
+            System.out.println("Joueur " + (playerPlaying) + " a cliqué sur la carte " + handCards[clickedIndex].getNumber() + " (valeur : " + handCards[clickedIndex].getPoints() + ")");
+            String info = "" + (playerPlaying) + " : " + handCards[clickedIndex].getNumber() + " : " + handCards[clickedIndex].getPoints() + "";
+            clickedCardInfoList.add(info);
+            System.out.println(clickedCardInfoList);
+
+            //TODO REMOVE CARD JOUé
+//            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(clickedIndex);
+//            cardPane.getChildren().remove(imageView);
+//            imageView.setDisable(true);
+
+
+//            Player.removeCardFromHand(players[playerIndex], cardIndex);
+
             playerPlaying++;
+            if (playerPlaying > players.size()) {
+                playerPlaying = playerPlaying % players.size();
+                round++;
+                clickedCardInfoList.clear(); //Permet de reset la liste des cartes jouées (fin de tour)
+
+            }
             fullHand();
+            currentRoundLabel.setText("Tour " + round);
+            currentPlayerLabel.setText(players.get(playerPlaying - 1).getName());
+            currentPlayerLabel.setTextFill(colorList[playerPlaying - 1]);
         });
         parallelTransition.play();
     }
