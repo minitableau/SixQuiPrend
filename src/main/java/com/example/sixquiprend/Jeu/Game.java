@@ -76,6 +76,7 @@ public class Game {
                 player.addToHand(card);
                 deckCards[cardIndex] = null;
                 cardIndex++;
+
             }
 
         }
