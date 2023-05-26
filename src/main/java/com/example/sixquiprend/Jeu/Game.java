@@ -17,7 +17,7 @@ public class Game {
     private static Card[] deckCards;
     private int roundNumber;
     private VBox gameCardBarBox;
-
+    public static int numberOfPlayers;
 
 
     public Game(List<Player> players) {

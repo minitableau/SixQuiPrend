@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.sixquiprend.Jeu.Game.numberOfPlayers;
 import static com.example.sixquiprend.Jeu.Game.players;
 
 public class Board extends Application {
@@ -45,7 +46,8 @@ public class Board extends Application {
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
     private int playerPlaying = 1;
-
+private int time= 2;
+private double fliptime = 0.5;
     private int round = 1;
     private VBox gameCardBarBox;
     private HBox cardBarBox;
@@ -61,7 +63,7 @@ public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        numberOfPlayers = players.size();
         // Créer le BorderPane principal qui contiendra les éléments du jeu
         mainPane = new BorderPane();
         mainPane.setPadding(new Insets(10, 10, 10, 10));
@@ -263,7 +265,6 @@ public class Board extends Application {
                     String cardPaneId = cardPane.getId(); // Récupérez l'identifiant de la StackPane
                     clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
                     System.out.println("CardPane clicked: " + clickedIndex);
-
                     System.out.println("Image clicked");
                     System.out.println("Card clicked: x = " + x + ", y = " + y);
                     // ATTENTION X = Colonnes, Y = Lignes.
@@ -283,9 +284,7 @@ public class Board extends Application {
 
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
         ImageView imageView = (ImageView) cardPane.getChildren().get(0);
-
         cardPane.getChildren().remove(imageView);
-
         StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(newX)).getChildren().get(newY);
         // Get the start and end coordinates
         Bounds startBounds = cardPane.localToScene(cardPane.getBoundsInLocal());
@@ -305,7 +304,7 @@ public class Board extends Application {
         root.getChildren().add(animatedImageView);
 
         // Create the translation transition
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(2), animatedImageView);
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(time), animatedImageView);
         tt.setToX(endBounds.getMinX() - startBounds.getMinX());
         tt.setToY(endBounds.getMinY() - startBounds.getMinY());
 
@@ -320,11 +319,28 @@ public class Board extends Application {
 
         players.get(playerPlaying - 1).setIsCardPlayed(x);
 
-
         System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
 
 
     }
+        public void changeCardPositionBis(int cardNumber) {
+        String deuxiemeElement = clickedCardInfoList.get(1);
+        String[] elements = deuxiemeElement.split(" : ");
+        String numeroCarte = elements[1];
+        int numeroCarteInt = Integer.parseInt(numeroCarte);
+
+        System.out.println(numeroCarteInt);
+        int playerIndex = 0;
+            Player player = players.get(playerIndex);
+            ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + numeroCarteInt + ".png").toExternalForm()));
+            cardPane.getChildren().clear();
+            cardPane.getChildren().add(imageView);
+
+            StackPane destinationPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(2);
+            destinationPane.getChildren().clear();
+            destinationPane.getChildren().add(imageView);
+        }
+
 
 
     public void changeCardPosition(int x, int y, int newX, int newY) {
@@ -332,13 +348,14 @@ public class Board extends Application {
     }
 
     public void flipImage(ImageView imageView) {
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.5), imageView);
+
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(fliptime), imageView);
         rotateTransition.setAxis(Rotate.Y_AXIS);
         rotateTransition.setFromAngle(0);
         rotateTransition.setToAngle(180);
         rotateTransition.setInterpolator(Interpolator.EASE_BOTH);
 
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.5), imageView);
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(fliptime), imageView);
         scaleTransition.setFromX(1);
         scaleTransition.setToX(0);
         scaleTransition.setInterpolator(Interpolator.EASE_BOTH);
@@ -349,13 +366,13 @@ public class Board extends Application {
             String imagePath = "/images/cards/backside.png";
             URL imageUrl = Board.class.getResource(imagePath);
             imageView.setImage(new Image(imageUrl.toExternalForm()));
-            RotateTransition rotateTransition2 = new RotateTransition(Duration.seconds(0.5), imageView);
+            RotateTransition rotateTransition2 = new RotateTransition(Duration.seconds(fliptime), imageView);
             rotateTransition2.setAxis(Rotate.Y_AXIS);
             rotateTransition2.setFromAngle(-180);
             rotateTransition2.setToAngle(0);
             rotateTransition2.setInterpolator(Interpolator.EASE_BOTH);
 
-            ScaleTransition scaleTransition2 = new ScaleTransition(Duration.seconds(0.5), imageView);
+            ScaleTransition scaleTransition2 = new ScaleTransition(Duration.seconds(fliptime), imageView);
             scaleTransition2.setFromX(0);
             scaleTransition2.setToX(1);
             scaleTransition2.setInterpolator(Interpolator.EASE_BOTH);
@@ -369,6 +386,13 @@ public class Board extends Application {
             System.out.println("Joueur " + (playerPlaying) + " a cliqué sur la carte " + handCards[clickedIndex].getNumber() + " (valeur : " + handCards[clickedIndex].getPoints() + ")");
             String info = "" + (playerPlaying) + " : " + handCards[clickedIndex].getNumber() + " : " + handCards[clickedIndex].getPoints() + "";
             clickedCardInfoList.add(info);
+            if (clickedCardInfoList.size() == numberOfPlayers) {
+                System.out.println("Message : Le nombre d'informations est égal au nombre de joueurs en cours de jeu.");
+                // Supprimer l'image "backside" du nouvel emplacement
+                changeCardPositionBis(103);
+
+            }
+
             System.out.println(clickedCardInfoList);
 
             //TODO REMOVE CARD JOUé
@@ -392,6 +416,7 @@ public class Board extends Application {
             currentPlayerLabel.setTextFill(colorList[playerPlaying - 1]);
         });
         parallelTransition.play();
+
     }
 
 }

@@ -25,8 +25,11 @@ public class LaunchGameWindow extends Stage {
     private Button addPlayerButton;
     private Button startButton;
     private int currentRow;
+    private int numberOfPlayers;
+
 
     public LaunchGameWindow() {
+        numberOfPlayers = 0;
         grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setVgap(10);
@@ -69,6 +72,7 @@ public class LaunchGameWindow extends Stage {
         grid.add(startButton, 1, currentRow + 1);
 
         currentRow++;
+        numberOfPlayers++;
     }
 
     private void startGame() {
