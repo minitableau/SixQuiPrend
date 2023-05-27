@@ -43,8 +43,8 @@ public class Board extends Application {
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
     private int playerPlaying = 1;
-private int time= 2;
-private double fliptime = 0.5;
+    private int time = 2;
+    private double fliptime = 0.5;
     private int round = 1;
     private VBox gameCardBarBox;
     private HBox cardBarBox;
@@ -63,6 +63,10 @@ private double fliptime = 0.5;
     private int[][] grid3 = new int[6][2];
     private int[][] grid4 = new int[6][2];
     private int[][] rightCardList = new int[players.size()][3];
+    private int indexLastCardGrid1 = 0;
+    private int indexLastCardGrid2 = 0;
+    private int indexLastCardGrid3 = 0;
+    private int indexLastCardGrid4 = 0;
 
     @Override
     public void start(Stage primaryStage) {
@@ -350,7 +354,8 @@ private double fliptime = 0.5;
 
 
     }
-        public void changeCardPositionBis(int cardNumber) {
+
+    public void changeCardPositionBis(int cardNumber) {
         String deuxiemeElement = clickedCardInfoString.get(1);
         String[] elements = deuxiemeElement.split(" : ");
         String numeroCarte = elements[1];
@@ -358,16 +363,15 @@ private double fliptime = 0.5;
 
         System.out.println(numeroCarteInt);
         int playerIndex = 0;
-            Player player = players.get(playerIndex);
-            ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + numeroCarteInt + ".png").toExternalForm()));
-            cardPane.getChildren().clear();
-            cardPane.getChildren().add(imageView);
+        Player player = players.get(playerIndex);
+        ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + numeroCarteInt + ".png").toExternalForm()));
+        cardPane.getChildren().clear();
+        cardPane.getChildren().add(imageView);
 
-            StackPane destinationPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(2);
-            destinationPane.getChildren().clear();
-            destinationPane.getChildren().add(imageView);
-        }
-
+        StackPane destinationPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(2);
+        destinationPane.getChildren().clear();
+        destinationPane.getChildren().add(imageView);
+    }
 
 
     public void changeCardPosition(int x, int y, int newX, int newY) {
@@ -423,7 +427,7 @@ private double fliptime = 0.5;
             if (clickedCardInfoString.size() == numberOfPlayers) {
                 System.out.println("Message : Le nombre d'informations est égal au nombre de joueurs en cours de jeu.");
                 // Supprimer l'image "backside" du nouvel emplacement
-                changeCardPositionBis(103);
+//                changeCardPositionBis(103);
 
             }
 
@@ -447,7 +451,9 @@ private double fliptime = 0.5;
 
                 Arrays.sort(rightCardList, Comparator.comparingInt(o -> o[1]));
                 System.out.println(Arrays.deepToString(rightCardList));
+                witchGrid();
                 //insertInBoard(rightCardList);
+
 
                 round++;
                 clickedCardInfoString.clear(); //Permet de reset la liste des cartes jouées (fin de tour)
@@ -530,40 +536,165 @@ private double fliptime = 0.5;
 //    }
 
     // Méthode utilitaire pour ajouter un élément à un tableau
-    public static int[] ajouterElement(int[] tableau, int element) {
-        int[] nouveauTableau = Arrays.copyOf(tableau, tableau.length + 1);
-        nouveauTableau[nouveauTableau.length - 1] = element;
-        return nouveauTableau;
-    }
+//    public static int[] ajouterElement(int[] tableau, int element) {
+//        int[] nouveauTableau = Arrays.copyOf(tableau, tableau.length + 1);
+//        nouveauTableau[nouveauTableau.length - 1] = element;
+//        return nouveauTableau;
+//    }
+
+    public void witchGrid() {
+        // Récupérer la carte jouée dans l'ordre croissant
+        for (int i = 0; i < rightCardList.length; i++) {
+            // Récupérer la carte jouée
+            //TODO : whoPlayerPlayThisCard a utiliser pour attribuer les points au bon joueur.
+            int whoPlayerPlayThisCard = rightCardList[i][0];
+            int card = rightCardList[i][1];
+            int point = rightCardList[i][2];
+
+            // Récupérer la dernière carte de chaque ligne
+            int numberRow1 = grid1[indexLastCardGrid1][0];
+            int numberRow2 = grid2[indexLastCardGrid2][0];
+            int numberRow3 = grid3[indexLastCardGrid3][0];
+            int numberRow4 = grid4[indexLastCardGrid4][0];
 
 
-    public void checkFullRow(int[][] grid1, int[][] grid2, int[][] grid3, int[][] grid4) {
-        if (grid1[5][0] != 0) {
-            System.out.println("Ligne 1 Full");
-            int scoreLigne1 = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
-            //ajoute le score au joueur en cours
-            // enlever les cartes de la ligne 1
-            addCard(0, 0, grid1[5][0] + ".png");
-        } else if (grid2[5][0] != 0) {
-            System.out.println("Ligne 2 Full");
-            int scoreLigne2 = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
-            //ajoute le score au joueur en cours
-            // enlever les cartes de la ligne 2
-            addCard(1, 0, grid2[5][0] + ".png");
-        } else if (grid3[5][0] != 0) {
-            System.out.println("Ligne 3 Full");
-            int scoreLigne3 = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
-            //ajoute le score au joueur en cours
-            // enlever les cartes de la ligne 3
-            addCard(2, 0, grid3[5][0] + ".png");
-        } else if (grid4[5][0] != 0) {
-            System.out.println("Ligne 4 Full");
-            int scoreLigne4 = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
-            //ajoute le score au joueur en cours
-            // enlever les cartes de la ligne 4
-            addCard(3, 0, grid4[5][0] + ".png");
+            //TODO DES PROBLEME SUR LE 5 METTRE PLUTOT 4 MAIS A FAIRE AVEC LES ANNIAMTIONS PR COMPRENDRE
+            if (indexLastCardGrid1 == 5) {
+                int points = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
+                System.out.println(points);
+                grid1[0][0] = numberRow1;
+                addCard(0, 0, numberRow1 + ".png");
+                //TODO donner les points au gars et reset la ligne
+
+                indexLastCardGrid1 = 0;
+            } else if (indexLastCardGrid2 == 5) {
+                int points = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
+                System.out.println(points);
+                grid2[0][0] = numberRow2;
+                addCard(1, 0, numberRow2 + ".png");
+                //TODO donner les points au gars et reset la ligne
+
+                indexLastCardGrid2 = 0;
+            } else if (indexLastCardGrid3 == 5) {
+                int points = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
+                System.out.println(points);
+                grid3[0][0] = numberRow3;
+                addCard(2, 0, numberRow3 + ".png");
+                //TODO donner les points au gars et reset la ligne
+
+                indexLastCardGrid3 = 0;
+            } else if (indexLastCardGrid4 == 5) {
+                int points = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
+                System.out.println(points);
+                grid4[0][0] = numberRow4;
+                addCard(3, 0, numberRow4 + ".png");
+                //TODO donner les points au gars et reset la ligne
+
+                indexLastCardGrid4 = 0;
+            }
+
+            if (card < numberRow1 && card < numberRow2 && card < numberRow3 && card < numberRow4) {
+                //TODO faire le systeme de choix de ca ligne avec les fleches les faire apparaitre
+                //NUMERO FLECHE CHOSI ALROS CLEAR LEAN + AJOUT DES POINT + METTRE LA CARTE ENTRAIN D ETRE JOUER A LA LIGNE SOUHAITER
+            }
+
+
+            // Trouver le placement sachant que l'on met la carte au plus proche par valeur croissante
+            // Comparer la carte avec les dernières cartes de chaque ligne pour trouver la position
+            int diff1 = card - numberRow1;
+            int diff2 = card - numberRow2;
+            int diff3 = card - numberRow3;
+            int diff4 = card - numberRow4;
+
+            // Trouver la plus petite différence positive
+            int minPositiveDiff = Integer.MAX_VALUE;
+
+            if (diff1 > 0) {
+                minPositiveDiff = Math.min(minPositiveDiff, diff1);
+            }
+            if (diff2 > 0) {
+                minPositiveDiff = Math.min(minPositiveDiff, diff2);
+            }
+            if (diff3 > 0) {
+                minPositiveDiff = Math.min(minPositiveDiff, diff3);
+            }
+            if (diff4 > 0) {
+                minPositiveDiff = Math.min(minPositiveDiff, diff4);
+            }
+
+            // Placer le numéro de la carte dans la bonne Grid avec la plus petite différence positive
+            if (minPositiveDiff == diff1) {
+                // Placer dans grid1
+                grid1[indexLastCardGrid1 + 1][0] = card;
+                grid1[indexLastCardGrid1 + 1][1] = point;
+                //TODO Faire la transition
+                //premet d'afficher dans la cardPane
+                addCard(0, indexLastCardGrid1 + 1, card + ".png");
+            } else if (minPositiveDiff == diff2) {
+                // Placer dans grid2
+                grid2[indexLastCardGrid2 + 1][0] = card;
+                grid2[indexLastCardGrid2 + 1][1] = point;
+                //TODO Faire la transition
+                //premet d'afficher dans la cardPane
+                addCard(1, indexLastCardGrid2 + 1, card + ".png");
+            } else if (minPositiveDiff == diff3) {
+                // Placer dans grid3
+                grid3[indexLastCardGrid3 + 1][0] = card;
+                grid3[indexLastCardGrid3 + 1][1] = point;
+                //TODO Faire la transition
+                //premet d'afficher dans la cardPane
+                addCard(2, indexLastCardGrid3 + 1, card + ".png");
+            } else if (minPositiveDiff == diff4) {
+                // Placer dans grid4
+                grid4[indexLastCardGrid4 + 1][0] = card;
+                grid4[indexLastCardGrid4 + 1][1] = point;
+                //TODO Faire la transition
+                //premet d'afficher dans la cardPane
+                addCard(3, indexLastCardGrid4 + 1, card + ".png");
+            }
+
+            // Incrémenter l'indexLastCardGrid de la bonne ligne
+            if (minPositiveDiff == diff1) {
+                indexLastCardGrid1++;
+            } else if (minPositiveDiff == diff2) {
+                indexLastCardGrid2++;
+            } else if (minPositiveDiff == diff3) {
+                indexLastCardGrid3++;
+            } else if (minPositiveDiff == diff4) {
+                indexLastCardGrid4++;
+            }
         }
+
     }
+
+
+//    public void checkFullRow(int[][] grid1, int[][] grid2, int[][] grid3, int[][] grid4) {
+//        if (grid1[5][0] != 0) {
+//            System.out.println("Ligne 1 Full");
+//            int scoreLigne1 = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
+//            //ajoute le score au joueur en cours
+//            // enlever les cartes de la ligne 1
+//            addCard(0, 0, grid1[5][0] + ".png");
+//        } else if (grid2[5][0] != 0) {
+//            System.out.println("Ligne 2 Full");
+//            int scoreLigne2 = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
+//            //ajoute le score au joueur en cours
+//            // enlever les cartes de la ligne 2
+//            addCard(1, 0, grid2[5][0] + ".png");
+//        } else if (grid3[5][0] != 0) {
+//            System.out.println("Ligne 3 Full");
+//            int scoreLigne3 = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
+//            //ajoute le score au joueur en cours
+//            // enlever les cartes de la ligne 3
+//            addCard(2, 0, grid3[5][0] + ".png");
+//        } else if (grid4[5][0] != 0) {
+//            System.out.println("Ligne 4 Full");
+//            int scoreLigne4 = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
+//            //ajoute le score au joueur en cours
+//            // enlever les cartes de la ligne 4
+//            addCard(3, 0, grid4[5][0] + ".png");
+//        }
+//    }
 
 }
 
