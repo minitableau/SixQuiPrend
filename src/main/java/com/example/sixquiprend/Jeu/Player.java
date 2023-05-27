@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class Player {
     private final String type;
+    private int score;
     private String name;
     private Card[] handCards;
     private boolean[] isCardPlayed;
@@ -14,6 +15,7 @@ public class Player {
         this.handCards = new Card[10];
         this.isCardPlayed = new boolean[10];
         Arrays.fill(isCardPlayed, false);
+        this.score = 0;
     }
 
     public String getName() {
@@ -48,5 +50,11 @@ public class Player {
         }
     }
 
+    public int getScore() {
+        return score;
+    }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

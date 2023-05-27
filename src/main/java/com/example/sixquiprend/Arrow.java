@@ -1,10 +1,6 @@
 package com.example.sixquiprend;
 
 import javafx.application.Application;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;

@@ -42,6 +42,7 @@ public class Board extends Application {
     private VBox scoreBox;
     private Label currentPlayerLabel;
     private Label currentRoundLabel;
+    private Label playerScoreLabel;
     private int playerPlaying = 1;
     private int time = 2;
     private double fliptime = 0.5;
@@ -67,6 +68,9 @@ public class Board extends Application {
     private int indexLastCardGrid2 = 0;
     private int indexLastCardGrid3 = 0;
     private int indexLastCardGrid4 = 0;
+    List<Polygon> arrowList = new ArrayList<>();
+    private Polygon arrowNode;
+    private boolean isGamePaused;
 
     @Override
     public void start(Stage primaryStage) {
@@ -122,8 +126,10 @@ public class Board extends Application {
                 cardHBox.getChildren().add(cardPane);
             }
             Arrow arrow = new Arrow();
-            Polygon arrowNode = arrow.getArrow(50, 40); // définit la largeur et la hauteur de la flèche
+            arrowNode = arrow.getArrow(50, 40); // définit la largeur et la hauteur de la flèche
+            arrowNode.setVisible(false);
             cardHBox.getChildren().add(arrowNode);
+            arrowList.add(arrowNode);
             cardHBox.setAlignment(Pos.CENTER);
 
         }
@@ -146,7 +152,7 @@ public class Board extends Application {
                 for (int j = 0; j < players.size() % 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(colorList[players.size() - (players.size() % 3)+j], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[players.size() - (players.size() % 3) + j], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
                     cardHBox.getChildren().add(cardPane);
                 }
             } else {
@@ -200,7 +206,7 @@ public class Board extends Application {
             playerNameLabel.setFont(Font.font(16));
             playerNameLabel.setTextFill(colorList[i]);
 
-            Label playerScoreLabel = new Label("0");
+            playerScoreLabel = new Label(players.get(i).getScore() + "");
             playerScoreLabel.setFont(Font.font(16));
             playerScoreLabel.setTextFill(colorList[i]);
 
@@ -446,12 +452,13 @@ public class Board extends Application {
         parallelTransition.play();
 
     }
+
     public void witchGrid() {
         // Récupérer la carte jouée dans l'ordre croissant
         for (int i = 0; i < rightCardList.length; i++) {
             // Récupérer la carte jouée
             //TODO : whoPlayerPlayThisCard a utiliser pour attribuer les points au bon joueur.
-            int whoPlayerPlayThisCard = rightCardList[i][0];
+            int whoPlayerPlayThisCard = rightCardList[i][0] - 1;
             int card = rightCardList[i][1];
             int point = rightCardList[i][2];
 
@@ -462,46 +469,21 @@ public class Board extends Application {
             int numberRow4 = grid4[indexLastCardGrid4][0];
 
 
-            //TODO DES PROBLEME SUR LE 5 METTRE PLUTOT 4 MAIS A FAIRE AVEC LES ANNIAMTIONS PR COMPRENDRE
-            if (indexLastCardGrid1 == 5) {
-                int points = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
-                System.out.println(points);
-                grid1[0][0] = numberRow1;
-                addCard(0, 0, numberRow1 + ".png");
-                //TODO donner les points au gars et reset la ligne
-
-                indexLastCardGrid1 = 0;
-            } else if (indexLastCardGrid2 == 5) {
-                int points = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
-                System.out.println(points);
-                grid2[0][0] = numberRow2;
-                addCard(1, 0, numberRow2 + ".png");
-                //TODO donner les points au gars et reset la ligne
-
-                indexLastCardGrid2 = 0;
-            } else if (indexLastCardGrid3 == 5) {
-                int points = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
-                System.out.println(points);
-                grid3[0][0] = numberRow3;
-                addCard(2, 0, numberRow3 + ".png");
-                //TODO donner les points au gars et reset la ligne
-
-                indexLastCardGrid3 = 0;
-            } else if (indexLastCardGrid4 == 5) {
-                int points = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
-                System.out.println(points);
-                grid4[0][0] = numberRow4;
-                addCard(3, 0, numberRow4 + ".png");
-                //TODO donner les points au gars et reset la ligne
-
-                indexLastCardGrid4 = 0;
-            }
-
-            if (card < numberRow1 && card < numberRow2 && card < numberRow3 && card < numberRow4) {
-                //TODO faire le systeme de choix de ca ligne avec les fleches les faire apparaitre
-                //NUMERO FLECHE CHOSI ALROS CLEAR LEAN + AJOUT DES POINT + METTRE LA CARTE ENTRAIN D ETRE JOUER A LA LIGNE SOUHAITER
-            }
-
+//            if (card < numberRow1 && card < numberRow2 && card < numberRow3 && card < numberRow4) {
+//                isGamePaused = true;
+//                for (int j = 0; j < arrowList.size(); j++) {
+//                    Polygon arrowNode = arrowList.get(j);
+//                    arrowNode.setVisible(true); // Rendre la flèche visible
+//                    final int arrowIndex = j;
+//                    arrowNode.setOnMouseClicked(event -> {
+//                        System.out.println("Flèche cliquée : " + arrowIndex + 1);
+//                    });
+//                }
+//                //TODO : ATTENDRE QUE LE JOUEUR CLIQUE SUR UNE FLECHE POUR CONTINUER
+//                //TODO : Ajouter la carte à la ligne souhaitée + CLEAR ROW + AJOUT DES POINT
+//                //TODO : Faire disparaitre les flèches
+//                isGamePaused = false;
+//            }
 
             // Trouver le placement sachant que l'on met la carte au plus proche par valeur croissante
             // Comparer la carte avec les dernières cartes de chaque ligne pour trouver la position
@@ -555,7 +537,23 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 addCard(3, indexLastCardGrid4 + 1, card + ".png");
+            } else {
+                isGamePaused = true;
+                for (int j = 0; j < arrowList.size(); j++) {
+                    Polygon arrowNode = arrowList.get(j);
+                    arrowNode.setVisible(true); // Rendre la flèche visible
+                    final int arrowIndex = j;
+                    arrowNode.setOnMouseClicked(event -> {
+                        System.out.println("Flèche cliquée : " + (int) (arrowIndex + 1));
+                    });
+                }
+                //TODO : ATTENDRE QUE LE JOUEUR CLIQUE SUR UNE FLECHE POUR CONTINUER
+                //TODO : Ajouter la carte à la ligne souhaitée + CLEAR ROW + AJOUT DES POINT
+                //TODO : Faire disparaitre les flèches
+                isGamePaused = false;
+                //repasser l'index de la lgine cliqué a 0
             }
+
 
             // Incrémenter l'indexLastCardGrid de la bonne ligne
             if (minPositiveDiff == diff1) {
@@ -566,6 +564,52 @@ public class Board extends Application {
                 indexLastCardGrid3++;
             } else if (minPositiveDiff == diff4) {
                 indexLastCardGrid4++;
+            }
+
+            if (indexLastCardGrid1 == 5) {
+                int points = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
+                System.out.println(points);
+                grid1[0][0] = grid1[5][0];
+                addCard(0, 0, grid1[0][0] + ".png");
+                //TODO reset la ligne
+                int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                players.get(whoPlayerPlayThisCard).setScore(score);
+                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+
+                indexLastCardGrid1 = 0;
+            } else if (indexLastCardGrid2 == 5) {
+                int points = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
+                System.out.println(points);
+                grid2[0][0] = grid2[5][0];
+                addCard(1, 0, grid2[0][0] + ".png");
+                //TODO reset la ligne
+                int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                players.get(whoPlayerPlayThisCard).setScore(score);
+                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+
+                indexLastCardGrid2 = 0;
+            } else if (indexLastCardGrid3 == 5) {
+                int points = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
+                System.out.println(points);
+                grid3[0][0] = grid3[5][0];
+                addCard(2, 0, grid3[0][0] + ".png");
+                //TODO reset la ligne
+                int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                players.get(whoPlayerPlayThisCard).setScore(score);
+                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+
+                indexLastCardGrid3 = 0;
+            } else if (indexLastCardGrid4 == 5) {
+                int points = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
+                System.out.println(points);
+                grid4[0][0] = grid4[5][0];
+                addCard(3, 0, grid4[0][0] + ".png");
+                //TODO donner les points au gars et reset la ligne
+                int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                players.get(whoPlayerPlayThisCard).setScore(score);
+                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+
+                indexLastCardGrid4 = 0;
             }
         }
 
