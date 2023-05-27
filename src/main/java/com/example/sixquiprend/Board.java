@@ -146,7 +146,7 @@ public class Board extends Application {
                 for (int j = 0; j < players.size() % 3; j++) {
                     StackPane cardPane = new StackPane();
                     cardPane.setPrefSize(CARD_BAR_WIDTH, CARD_BAR_HEIGHT);
-                    cardPane.setBorder(new Border(new BorderStroke(colorList[players.size() - 1], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+                    cardPane.setBorder(new Border(new BorderStroke(colorList[players.size() - (players.size() % 3)+j], BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
                     cardHBox.getChildren().add(cardPane);
                 }
             } else {
@@ -239,16 +239,6 @@ public class Board extends Application {
             addCard(i, 0, Game.getRemainingCards().get(i).getNumber() + ".png");
             //TODO les 4 premieres cartes son a enlever du jeu dcp. -> ou tout redistribuer donc pas si grave.
         }
-
-
-//        System.out.println(grid1[5][0]);
-//        System.out.println(grid1[0][1]);
-//        System.out.println(grid2[0][0]);
-//        System.out.println(grid2[0][1]);
-//        System.out.println(grid3[0][0]);
-//        System.out.println(grid3[0][1]);
-//        System.out.println(grid4[0][0]);
-//        System.out.println(grid4[0][1]);
 
     }
 
@@ -424,13 +414,12 @@ public class Board extends Application {
 //            imageView.setDisable(true);
             clickedCardInfoString.add(info);
             System.out.println(clickedCardInfoString);
-            if (clickedCardInfoString.size() == numberOfPlayers) {
-                System.out.println("Message : Le nombre d'informations est égal au nombre de joueurs en cours de jeu.");
-                // Supprimer l'image "backside" du nouvel emplacement
-//                changeCardPositionBis(103);
-
-            }
-
+//            if (clickedCardInfoString.size() == numberOfPlayers) {
+//                System.out.println("Message : Le nombre d'informations est égal au nombre de joueurs en cours de jeu.");
+//                // Supprimer l'image "backside" du nouvel emplacement
+////                changeCardPositionBis(103);
+//
+//            }
 
             // Creation du tableau equivalent a info (chaines de caracteres).
             rightCardList[playerPlaying - 1][0] = playerPlaying;
@@ -441,19 +430,9 @@ public class Board extends Application {
 
             if (playerPlaying > players.size()) {
                 playerPlaying = playerPlaying % players.size();
-
-                //TODO : Suite du jeu ici
-//                grid1[5][0] = 3;
-//                addCard(0, 5, "3.png");
-//                checkFullRow(grid1, grid2, grid3, grid4);
-
-// trier le tableau selon sa deuxieme colonne (valeur de la carte)
-
                 Arrays.sort(rightCardList, Comparator.comparingInt(o -> o[1]));
                 System.out.println(Arrays.deepToString(rightCardList));
                 witchGrid();
-                //insertInBoard(rightCardList);
-
 
                 round++;
                 clickedCardInfoString.clear(); //Permet de reset la liste des cartes jouées (fin de tour)
@@ -467,81 +446,6 @@ public class Board extends Application {
         parallelTransition.play();
 
     }
-
-    //    public void whichRow(int[][] rightCardList){
-//        while(grid1[i][0] = 0){
-//            System.out.println("Ligne 1");
-//        }
-//    }
-
-//    public static void insertInBoard(int[][] rightCardList) {
-//        //int[] player = new int[rightCardList.length];
-//        int[] cards = new int[rightCardList.length];
-//        //int[] scores = new int[rightCardList.length];
-//        for (int i = 0; i < rightCardList.length; i++) {
-//            //player[i] = rightCardList[i][0];
-//            cards[i] = rightCardList[i][1];
-//            //scores[i] = rightCardList[i][2];
-//        }
-//
-////        for (int i = 5; i > 0; i--) {
-////            while (grid1[i][0] != 0) {
-////                firstRow[i] = grid1[i][0];
-////            }
-////            while (grid1[i][0] != 0) {
-////                secondRow[i] = grid1[i][0];
-////            }
-////            while (grid1[i][0] != 0) {
-////                thirdRow[i] = grid1[i][0];
-////            }
-////            while (grid1[i][0] != 0) {
-////                fourthRow[i] = grid1[i][0];
-////            }
-////        }
-//
-//        int[][] tableaux = {
-//                {2, 4, 6, 8},
-//                {10, 12},
-//                {14, 16, 18},
-//                {20}
-//        };
-//
-//        // Parcours des cartes
-//        for (int carte : cards) {
-//            int ligneMin = -1;
-//            int valeurMin = Integer.MAX_VALUE;
-//
-//            // Recherche de la ligne avec la valeur inférieure la plus proche
-//            for (int i = 0; i < tableaux.length; i++) {
-//                int derniereValeur = tableaux[i][tableaux[i].length - 1];
-//                if (carte < derniereValeur && derniereValeur < valeurMin) {
-//                    ligneMin = i;
-//                    valeurMin = derniereValeur;
-//                }
-//            }
-//
-//            if (ligneMin != -1) {
-//                // Placer la carte dans la ligne correspondante
-//                tableaux[ligneMin] = ajouterElement(tableaux[ligneMin], carte);
-//            } else {
-//                // Traiter le cas où il n'y a pas de valeur inférieure
-//                // (à implémenter)
-//            }
-//        }
-//
-//        // Affichage des tableaux après placement des cartes
-//        for (int[] tableau : tableaux) {
-//            System.out.println(Arrays.toString(tableau));
-//        }
-//    }
-
-    // Méthode utilitaire pour ajouter un élément à un tableau
-//    public static int[] ajouterElement(int[] tableau, int element) {
-//        int[] nouveauTableau = Arrays.copyOf(tableau, tableau.length + 1);
-//        nouveauTableau[nouveauTableau.length - 1] = element;
-//        return nouveauTableau;
-//    }
-
     public void witchGrid() {
         // Récupérer la carte jouée dans l'ordre croissant
         for (int i = 0; i < rightCardList.length; i++) {
@@ -666,35 +570,6 @@ public class Board extends Application {
         }
 
     }
-
-
-//    public void checkFullRow(int[][] grid1, int[][] grid2, int[][] grid3, int[][] grid4) {
-//        if (grid1[5][0] != 0) {
-//            System.out.println("Ligne 1 Full");
-//            int scoreLigne1 = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
-//            //ajoute le score au joueur en cours
-//            // enlever les cartes de la ligne 1
-//            addCard(0, 0, grid1[5][0] + ".png");
-//        } else if (grid2[5][0] != 0) {
-//            System.out.println("Ligne 2 Full");
-//            int scoreLigne2 = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
-//            //ajoute le score au joueur en cours
-//            // enlever les cartes de la ligne 2
-//            addCard(1, 0, grid2[5][0] + ".png");
-//        } else if (grid3[5][0] != 0) {
-//            System.out.println("Ligne 3 Full");
-//            int scoreLigne3 = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
-//            //ajoute le score au joueur en cours
-//            // enlever les cartes de la ligne 3
-//            addCard(2, 0, grid3[5][0] + ".png");
-//        } else if (grid4[5][0] != 0) {
-//            System.out.println("Ligne 4 Full");
-//            int scoreLigne4 = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
-//            //ajoute le score au joueur en cours
-//            // enlever les cartes de la ligne 4
-//            addCard(3, 0, grid4[5][0] + ".png");
-//        }
-//    }
 
 }
 
