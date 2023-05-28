@@ -271,11 +271,13 @@ public class Board extends Application {
 
 
     private void addCard(int i, int j, String imageName) {
+        PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        delay.setOnFinished(event -> {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
         URL imageUrl = Board.class.getResource("/images/cards/");
         ImageView imageView = new ImageView(new Image(imageUrl + imageName));
-        cardPane.getChildren().add(imageView);
-
+        cardPane.getChildren().add(imageView);  });
+            delay.play();
     }
 
 
@@ -343,7 +345,7 @@ public class Board extends Application {
             String imagePath = "/images/cards/backside.png";
             URL imageUrl = Board.class.getResource(imagePath);
             imageView.setImage(new Image(imageUrl.toExternalForm()));
-           newCardPane.getChildren().add(imageView);
+            newCardPane.getChildren().add(imageView);
         });
 
         // Start the transition
@@ -357,40 +359,40 @@ public class Board extends Application {
     public void changeCardPosition2(int x, int y, int z) {
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> {
-        for (int i = 0; i < rightCardList.length; i++) {
-            int whoPlayerPlayThisCard = rightCardList[i][0] - 1;
+            for (int i = 0; i < rightCardList.length; i++) {
+                int whoPlayerPlayThisCard = rightCardList[i][0] - 1;
 
-        StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(0)).getChildren().get(whoPlayerPlayThisCard );
-        ImageView imageView = (ImageView) newCardPane.getChildren().get(0);
-        StackPane nCardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(y)).getChildren().get(z);
+                StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(0)).getChildren().get(whoPlayerPlayThisCard);
+                ImageView imageView = (ImageView) newCardPane.getChildren().get(0);
+                StackPane nCardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(y)).getChildren().get(z);
 
-        // Get the start and end coordinates
-        Bounds startBounds = newCardPane.localToScene(newCardPane.getBoundsInLocal());
-        Bounds endBounds = nCardPane.localToScene(nCardPane.getBoundsInLocal());
-        // Create a new ImageView to animate
-        ImageView animatedImageView = new ImageView(imageView.getImage());
-        animatedImageView.setX(startBounds.getMinX());
-        animatedImageView.setY(startBounds.getMinY());
+                // Get the start and end coordinates
+                Bounds startBounds = newCardPane.localToScene(newCardPane.getBoundsInLocal());
+                Bounds endBounds = nCardPane.localToScene(nCardPane.getBoundsInLocal());
+                // Create a new ImageView to animate
+                ImageView animatedImageView = new ImageView(imageView.getImage());
+                animatedImageView.setX(startBounds.getMinX());
+                animatedImageView.setY(startBounds.getMinY());
 
-        // Add the animated ImageView to the scene
-        Pane root = (Pane) cardBarBox.getScene().getRoot();
-        root.getChildren().add(animatedImageView);
+                // Add the animated ImageView to the scene
+                Pane root = (Pane) cardBarBox.getScene().getRoot();
+                root.getChildren().add(animatedImageView);
 
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(2), animatedImageView);
-        tt.setToX(endBounds.getMinX() - startBounds.getMinX());
-        tt.setToY(endBounds.getMinY() - startBounds.getMinY());
-        // Start the transition
-        tt.play();
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(2), animatedImageView);
+                tt.setToX(endBounds.getMinX() - startBounds.getMinX());
+                tt.setToY(endBounds.getMinY() - startBounds.getMinY());
+                // Start the transition
+                tt.play();
 
-        tt.setOnFinished(event4 -> {
-            root.getChildren().remove(animatedImageView);
+                tt.setOnFinished(event4 -> {
+                    root.getChildren().remove(animatedImageView);
 
-        });
-    }
+                });
+            }
         });
         delay.play();
 
-}
+    }
 
 
     public void changeCardPositionBis(int cardNumber) {
@@ -561,7 +563,7 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
 
-                changeCardPosition2(0,0,indexLastCardGrid1 + 1);
+                changeCardPosition2(0, 0, indexLastCardGrid1 + 1);
 
                 addCard(0, indexLastCardGrid1 + 1, card + ".png");
 
@@ -571,7 +573,7 @@ public class Board extends Application {
                 grid2[indexLastCardGrid2 + 1][1] = point;
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
-                changeCardPosition2(1,1,indexLastCardGrid2 + 1);
+                changeCardPosition2(1, 1, indexLastCardGrid2 + 1);
                 addCard(1, indexLastCardGrid2 + 1, card + ".png");
             } else if (minPositiveDiff == diff3) {
                 // Placer dans grid3
@@ -579,7 +581,7 @@ public class Board extends Application {
                 grid3[indexLastCardGrid3 + 1][1] = point;
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
-                changeCardPosition2(2,2,indexLastCardGrid3 + 1);
+                changeCardPosition2(2, 2, indexLastCardGrid3 + 1);
                 addCard(2, indexLastCardGrid3 + 1, card + ".png");
             } else if (minPositiveDiff == diff4) {
                 // Placer dans grid4
@@ -587,7 +589,7 @@ public class Board extends Application {
                 grid4[indexLastCardGrid4 + 1][1] = point;
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
-                changeCardPosition2(3,3,indexLastCardGrid4 + 1);
+                changeCardPosition2(3, 3, indexLastCardGrid4 + 1);
                 addCard(3, indexLastCardGrid4 + 1, card + ".png");
             } else {
                 isGamePaused = true;
@@ -666,18 +668,19 @@ public class Board extends Application {
         }
 
     }
+
     public void revealCards() {
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         delay.setOnFinished(event -> {
-        for (int x = 0; x < numberOfPlayers-1; x++) {
-            for (int y = 0; y < numberOfPlayers; y++) {
-                StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(x)).getChildren().get(y);
-                newCardPane.getChildren().clear();
-                ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + rightCardList[numberOfPlayers - y - 1][1] + ".png").toExternalForm()));
+            for (int x = 0; x < numberOfPlayers - 1; x++) {
+                for (int y = 0; y < numberOfPlayers; y++) {
+                    StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(x)).getChildren().get(y);
+                    newCardPane.getChildren().clear();
+                    ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + rightCardList[numberOfPlayers - y - 1][1] + ".png").toExternalForm()));
 
-                newCardPane.getChildren().add(imageView);
+                    newCardPane.getChildren().add(imageView);
+                }
             }
-        }
             witchGrid();
         });
         delay.play();
