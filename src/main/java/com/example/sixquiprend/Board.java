@@ -73,6 +73,8 @@ public class Board extends Application {
     List<Polygon> arrowList = new ArrayList<>();
     private Polygon arrowNode;
     private boolean isGamePaused;
+    private int selectedRow = -1;
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -592,20 +594,35 @@ public class Board extends Application {
                 changeCardPosition2(3, 3, indexLastCardGrid4 + 1);
                 addCard(3, indexLastCardGrid4 + 1, card + ".png");
             } else {
-                isGamePaused = true;
+             //   isGamePaused = true;
                 for (int j = 0; j < arrowList.size(); j++) {
                     Polygon arrowNode = arrowList.get(j);
                     arrowNode.setVisible(true); // Rendre la flèche visible
                     final int arrowIndex = j;
                     arrowNode.setOnMouseClicked(event -> {
-                        System.out.println("Flèche cliquée : " + (int) (arrowIndex + 1));
+                        System.out.println("Flèche cliquée : " + (arrowIndex + 1));
+                        selectedRow = arrowIndex; // Enregistrer l'index de la ligne choisie par le joueur
+                        synchronized (this) {
+                            this.notify(); // Réveiller le thread principal en attente
+                        }
                     });
                 }
-                //TODO : ATTENDRE QUE LE JOUEUR CLIQUE SUR UNE FLECHE POUR CONTINUER
-                //TODO : Ajouter la carte à la ligne souhaitée + CLEAR ROW + AJOUT DES POINT
-                //TODO : Faire disparaitre les flèches
+                PauseTransition delay = new PauseTransition(Duration.seconds(2));
+                delay.setOnFinished(event -> {
+                synchronized (this) {
+                    try {
+                        this.wait(); // Mettre le jeu en pause jusqu'à ce que le joueur fasse un choix
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                });
+                delay.play();
+// TODO : Ajouter la carte à la ligne choisie par le joueur + Vider la rangée + Ajouter des points
+// TODO : Faire disparaître les flèches
                 isGamePaused = false;
-                //repasser l'index de la lgine cliqué a 0
+                selectedRow = -1; // Réinitialiser la ligne choisie pour la prochaine fois
+
             }
 
 
@@ -677,14 +694,12 @@ public class Board extends Application {
                     StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(x)).getChildren().get(y);
                     newCardPane.getChildren().clear();
                     ImageView imageView = new ImageView(new Image(Board.class.getResource("/images/cards/" + rightCardList[numberOfPlayers - y - 1][1] + ".png").toExternalForm()));
-
                     newCardPane.getChildren().add(imageView);
                 }
             }
             witchGrid();
         });
         delay.play();
-
     }
 
 
