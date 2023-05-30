@@ -5,9 +5,11 @@ import com.example.sixquiprend.Jeu.Game;
 import com.example.sixquiprend.Jeu.Player;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -292,6 +294,12 @@ public class Board extends Application {
         cardPane.getChildren().add(imageView);
     }
 
+
+
+
+
+
+
     public void setOnClickAction(ImageView imageView, int x, int y) {
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
         imageView.setOnMouseClicked(event -> {
@@ -397,6 +405,7 @@ public class Board extends Application {
 //
 //    }
     public void changeCardPosition2(int x, int y, int z) {
+
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> {
             for (int i = 0; i < rightCardList.length; i++) {
@@ -426,9 +435,11 @@ public class Board extends Application {
                 // Start the transition
                 tt.play();
 
+
                 tt.setOnFinished(event4 -> {
                     root.getChildren().remove(animatedImageView);
-
+                    newCardPane.getChildren().clear();
+                    suprHideCard();
                 });
             }
         });
@@ -718,11 +729,53 @@ public class Board extends Application {
         }
 
     }
+    private void hideCardInHand() {
+        String imageName = "/images/cards/backside.png";
+
+        for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            URL imageUrl = Board.class.getResource(imageName);
+            ImageView imageView = new ImageView(new Image(imageUrl.toString()));
+            setOnClickAction(imageView, i, 0);
+            cardPane.getChildren().add(imageView);
+        }
+    }
+
+    private void suprHideCard() {
+        String imageName = "/images/cards/backside.png";
+        for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+
+            // Recherche de l'ImageView contenant l'image de dos
+            ImageView backsideImageView = null;
+            ObservableList<Node> children = cardPane.getChildren();
+            for (Node child : children) {
+                if (child instanceof ImageView) {
+                    ImageView imageView = (ImageView) child;
+                    Image image = imageView.getImage();
+                    if (image != null && image.getUrl().equals(Board.class.getResource(imageName).toString())) {
+                        backsideImageView = imageView;
+                        break;
+                    }
+                }
+            }
+
+            // Suppression de l'ImageView de dos s'il a été trouvé
+            if (backsideImageView != null) {
+                cardPane.getChildren().remove(backsideImageView);
+            }
+        }
+    }
+
 
     public void revealCards() {
+
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         cardPlay = 0;
         delay.setOnFinished(event -> {
+            hideCardInHand();
+
+
             for (int x = 0; x <= (players.size() - 1) / 3; x++) {
                 if (x == (players.size() - 1) / 3 && players.size() % 3 != 0) {
                     for (int y = 0; y < players.size() % 3; y++) {
@@ -745,6 +798,7 @@ public class Board extends Application {
             witchGrid();
         });
         delay.play();
+
     }
 
 }
