@@ -1,24 +1,18 @@
 package com.example.sixquiprend.Jeu;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+
 import javafx.scene.layout.VBox;
 
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
-    public static List<Player> players;;
+    public static List<Player> players;
     private static Card[] deckCards;
     private int roundNumber;
     private VBox gameCardBarBox;
     public static int numberOfPlayers;
-
 
     public Game(List<Player> players) {
         Game.players = players;
@@ -96,6 +90,7 @@ public class Game {
         }
 
     }
+
     public void printRemainingCards() {
         System.out.println("Cartes restantes dans le paquet :");
         int remainingCards = 0;
@@ -116,7 +111,6 @@ public class Game {
         }
         return remainingCards;
     }
-
 
 
 }
