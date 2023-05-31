@@ -698,11 +698,50 @@ public class Board extends Application {
 
     }
 
+    private void hideCardInHand() {
+        String imageName = "/images/cards/backside.png";
+
+        for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            URL imageUrl = Board.class.getResource(imageName);
+            ImageView imageView = new ImageView(new Image(imageUrl.toString()));
+            setOnClickAction(imageView, i, 0);
+            cardPane.getChildren().add(imageView);
+        }
+    }
+
+    private void suprHideCard() {
+        String imageName = "/images/cards/backside.png";
+        for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+
+            // Recherche de l'ImageView contenant l'image de dos
+            ImageView backsideImageView = null;
+            ObservableList<Node> children = cardPane.getChildren();
+            for (Node child : children) {
+                if (child instanceof ImageView) {
+                    ImageView imageView = (ImageView) child;
+                    Image image = imageView.getImage();
+                    if (image != null && image.getUrl().equals(Board.class.getResource(imageName).toString())) {
+                        backsideImageView = imageView;
+                        break;
+                    }
+                }
+            }
+
+            // Suppression de l'ImageView de dos s'il a été trouvé
+            if (backsideImageView != null) {
+                cardPane.getChildren().remove(backsideImageView);
+            }
+        }
+    }
+
     public void revealCards() {
-        //TODO cacher les cartes dans la main du joueur
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         cardPlay = 0;
         delay.setOnFinished(event -> {
+            hideCardInHand();
+            //TODO EMEPECHER DE CLICKER TOUTES LES CARTES PENDANT CE TEMPS
             for (int x = 0; x <= (players.size() - 1) / 3; x++) {
                 if (x == (players.size() - 1) / 3 && players.size() % 3 != 0) {
                     for (int y = 0; y < players.size() % 3; y++) {
