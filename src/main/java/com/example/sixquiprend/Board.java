@@ -522,11 +522,16 @@ public class Board extends Application {
             int card = rightCardList[i][1];
             int point = rightCardList[i][2];
 
+            System.out.println("Carte jouée : " + card + " par le joueur " + whoPlayerPlayThisCard);
             // Récupérer la dernière carte de chaque ligne
             int numberRow1 = grid1[indexLastCardGrid1][0];
+            System.out.println("Dernière carte de la ligne 1 : " + numberRow1);
             int numberRow2 = grid2[indexLastCardGrid2][0];
+            System.out.println("Dernière carte de la ligne 2 : " + numberRow2);
             int numberRow3 = grid3[indexLastCardGrid3][0];
+            System.out.println("Dernière carte de la ligne 3 : " + numberRow3);
             int numberRow4 = grid4[indexLastCardGrid4][0];
+            System.out.println("Dernière carte de la ligne 4 : " + numberRow4);
 
 
 //            if (card < numberRow1 && card < numberRow2 && card < numberRow3 && card < numberRow4) {
@@ -580,7 +585,7 @@ public class Board extends Application {
                 changeCardPosition2(0, 0, indexLastCardGrid1 + 1);
 
                 addCard(0, indexLastCardGrid1 + 1, card + ".png", delayCard);
-
+                indexLastCardGrid1++;
             } else if (minPositiveDiff == diff2) {
                 // Placer dans grid2
                 grid2[indexLastCardGrid2 + 1][0] = card;
@@ -588,7 +593,9 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(1, 1, indexLastCardGrid2 + 1);
-                addCard(1, indexLastCardGrid2 + 1, card + ".png",delayCard);
+                addCard(1, indexLastCardGrid2 + 1, card + ".png", delayCard);
+                indexLastCardGrid2++;
+
             } else if (minPositiveDiff == diff3) {
                 // Placer dans grid3
                 grid3[indexLastCardGrid3 + 1][0] = card;
@@ -596,7 +603,8 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(2, 2, indexLastCardGrid3 + 1);
-                addCard(2, indexLastCardGrid3 + 1, card + ".png",delayCard);
+                addCard(2, indexLastCardGrid3 + 1, card + ".png", delayCard);
+                indexLastCardGrid3++;
             } else if (minPositiveDiff == diff4) {
                 // Placer dans grid4
                 grid4[indexLastCardGrid4 + 1][0] = card;
@@ -604,8 +612,57 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(3, 3, indexLastCardGrid4 + 1);
-                addCard(3, indexLastCardGrid4 + 1, card + ".png",delayCard);
+                addCard(3, indexLastCardGrid4 + 1, card + ".png", delayCard);
+                indexLastCardGrid4++;
             } else {
+                //TODO : Pour le moment prendre la ligne avec le moins de point
+                int minPointRow = Math.min(Math.min(Spoint(grid1), Spoint(grid2)), Math.min(Spoint(grid3), Spoint(grid4)));
+                if (minPointRow == Spoint(grid1)) {
+                    int points = Spoint(grid1);
+                    System.out.println(points);
+                    grid1[0][0] = card;
+                    changeCardPosition2(0, 0, indexLastCardGrid1);
+                    addCard(0, 0, grid1[0][0] + ".png", delayCard);
+                    //TODO reset la ligne
+                    int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                    players.get(whoPlayerPlayThisCard).setScore(score);
+                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    indexLastCardGrid1 = 0;
+                } else if (minPointRow == Spoint(grid2)) {
+                    int points = Spoint(grid2);
+                    System.out.println(points);
+                    grid2[0][0] = card;
+                    changeCardPosition2(1, 1, indexLastCardGrid2);
+                    addCard(1, 0, grid2[0][0] + ".png", delayCard);
+                    //TODO reset la ligne
+                    int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                    players.get(whoPlayerPlayThisCard).setScore(score);
+                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    indexLastCardGrid2 = 0;
+                } else if (minPointRow == Spoint(grid3)) {
+                    int points = Spoint(grid3);
+                    System.out.println(points);
+                    grid3[0][0] = card;
+                    changeCardPosition2(2, 2, indexLastCardGrid3);
+                    addCard(2, 0, grid3[0][0] + ".png", delayCard);
+                    //TODO reset la ligne
+                    int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                    players.get(whoPlayerPlayThisCard).setScore(score);
+                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    indexLastCardGrid3 = 0;
+                } else if (minPointRow == Spoint(grid4)) {
+                    int points = Spoint(grid4);
+                    System.out.println(points);
+                    grid4[0][0] = card;
+                    changeCardPosition2(3, 3, indexLastCardGrid4);
+                    addCard(3, 0, grid4[0][0] + ".png", delayCard);
+                    //TODO donner les points au gars et reset la ligne
+                    int score = players.get(whoPlayerPlayThisCard).getScore() + points;
+                    players.get(whoPlayerPlayThisCard).setScore(score);
+                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    indexLastCardGrid4 = 0;
+                }
+
                 //   isGamePaused = true;
                 for (int j = 0; j < arrowList.size(); j++) {
                     Polygon arrowNode = arrowList.get(j);
@@ -614,88 +671,79 @@ public class Board extends Application {
                     arrowNode.setOnMouseClicked(event -> {
                         System.out.println("Flèche cliquée : " + (arrowIndex + 1));
                         selectedRow = arrowIndex; // Enregistrer l'index de la ligne choisie par le joueur
-                        synchronized (this) {
-                            this.notify(); // Réveiller le thread principal en attente
-                        }
+//                        synchronized (this) {
+//                            this.notify(); // Réveiller le thread principal en attente
+//                        }
+                        arrowNode.setVisible(false);
                     });
+
+//                PauseTransition delay = new PauseTransition(Duration.seconds(2));
+//                delay.setOnFinished(event -> {
+//                    synchronized (this) {
+//                        try {
+//                            this.wait(); // Mettre le jeu en pause jusqu'à ce que le joueur fasse un choix
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//                delay.play();
+                    // TODO : Ajouter la carte à la ligne choisie par le joueur + Vider la rangée + Ajouter des points
+                    // TODO : Faire disparaître les flèches
+                    isGamePaused = false;
+                    selectedRow = -1; // Réinitialiser la ligne choisie pour la prochaine fois
+
                 }
-                PauseTransition delay = new PauseTransition(Duration.seconds(2));
-                delay.setOnFinished(event -> {
-                    synchronized (this) {
-                        try {
-                            this.wait(); // Mettre le jeu en pause jusqu'à ce que le joueur fasse un choix
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                delay.play();
-                // TODO : Ajouter la carte à la ligne choisie par le joueur + Vider la rangée + Ajouter des points
-                // TODO : Faire disparaître les flèches
-                isGamePaused = false;
-                selectedRow = -1; // Réinitialiser la ligne choisie pour la prochaine fois
-
-            }
-
-
-            // Incrémenter l'indexLastCardGrid de la bonne ligne
-            if (minPositiveDiff == diff1) {
-                indexLastCardGrid1++;
-            } else if (minPositiveDiff == diff2) {
-                indexLastCardGrid2++;
-            } else if (minPositiveDiff == diff3) {
-                indexLastCardGrid3++;
-            } else if (minPositiveDiff == diff4) {
-                indexLastCardGrid4++;
             }
 
             if (indexLastCardGrid1 == 5) {
-                int points = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
+                int points = Spoint(grid1);
                 System.out.println(points);
                 grid1[0][0] = grid1[5][0];
-                addCard(0, 0, grid1[0][0] + ".png",delayCard);
+                addCard(0, 0, grid1[0][0] + ".png", delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
-
                 indexLastCardGrid1 = 0;
             } else if (indexLastCardGrid2 == 5) {
-                int points = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
+                int points = Spoint(grid2);
                 System.out.println(points);
                 grid2[0][0] = grid2[5][0];
-                addCard(1, 0, grid2[0][0] + ".png",delayCard);
+                addCard(1, 0, grid2[0][0] + ".png", delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
-
                 indexLastCardGrid2 = 0;
             } else if (indexLastCardGrid3 == 5) {
-                int points = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
+                int points = Spoint(grid3);
                 System.out.println(points);
                 grid3[0][0] = grid3[5][0];
-                addCard(2, 0, grid3[0][0] + ".png",delayCard);
+                addCard(2, 0, grid3[0][0] + ".png", delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
-
                 indexLastCardGrid3 = 0;
             } else if (indexLastCardGrid4 == 5) {
-                int points = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
+                int points = Spoint(grid4);
                 System.out.println(points);
                 grid4[0][0] = grid4[5][0];
-                addCard(3, 0, grid4[0][0] + ".png",delayCard);
+                addCard(3, 0, grid4[0][0] + ".png", delayCard);
                 //TODO donner les points au gars et reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
-
                 indexLastCardGrid4 = 0;
             }
         }
 
+    }
+
+
+    private int Spoint(int[][] grid) {
+        return grid[0][1] + grid[1][1] + grid[2][1] + grid[3][1] + grid[4][1];
     }
 
     private void hideCardInHand() {
