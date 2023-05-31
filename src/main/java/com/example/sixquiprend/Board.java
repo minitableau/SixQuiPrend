@@ -46,7 +46,7 @@ public class Board extends Application {
     private Label currentRoundLabel;
     private Label playerScoreLabel;
     private int playerPlaying = 1;
-    private int time = 2;
+    private int time = 0;
     private double fliptime = 0.5;
     private int round = 1;
     private VBox gameCardBarBox;
@@ -306,6 +306,12 @@ public class Board extends Application {
         setOnClickAction(imageView, i, 0);
         cardPane.getChildren().add(imageView);
     }
+
+
+
+
+
+
 
     public void setOnClickAction(ImageView imageView, int x, int y) {
         StackPane cardPane = (StackPane) cardBarBox.getChildren().get(x);
@@ -700,6 +706,10 @@ public class Board extends Application {
                 int points = Spoint(grid1);
                 System.out.println(points);
                 grid1[0][0] = grid1[5][0];
+                for (int z = 1; z <= 5; z++) {
+                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
+                    cardPane.getChildren().clear();
+                }
                 addCard(0, 0, grid1[0][0] + ".png", delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
@@ -710,8 +720,13 @@ public class Board extends Application {
                 int points = Spoint(grid2);
                 System.out.println(points);
                 grid2[0][0] = grid2[5][0];
+                for (int z = 1; z <= 5; z++) {
+                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
+                    cardPane.getChildren().clear();
+                }
                 addCard(1, 0, grid2[0][0] + ".png", delayCard);
                 //TODO reset la ligne
+
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
@@ -720,8 +735,13 @@ public class Board extends Application {
                 int points = Spoint(grid3);
                 System.out.println(points);
                 grid3[0][0] = grid3[5][0];
+                for (int z = 1; z <= 5; z++) {
+                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
+                    cardPane.getChildren().clear();
+                }
                 addCard(2, 0, grid3[0][0] + ".png", delayCard);
                 //TODO reset la ligne
+
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
@@ -730,8 +750,13 @@ public class Board extends Application {
                 int points = Spoint(grid4);
                 System.out.println(points);
                 grid4[0][0] = grid4[5][0];
+                for (int z = 1; z <= 5; z++) {
+                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
+                    cardPane.getChildren().clear();
+                }
                 addCard(3, 0, grid4[0][0] + ".png", delayCard);
                 //TODO donner les points au gars et reset la ligne
+
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
                 playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
