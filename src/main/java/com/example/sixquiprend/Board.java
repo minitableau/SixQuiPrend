@@ -74,6 +74,7 @@ public class Board extends Application {
     private int selectedRow = -1;
     private int cardPlay;
     private int[][] rightCardListWithoutSort;
+    private int delayCard = 5;
 
 
     @Override
@@ -273,12 +274,24 @@ public class Board extends Application {
 
 
     private void addCard(int i, int j, String imageName) {
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        //PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        //delay.setOnFinished(event -> {
+        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
+        URL imageUrl = Board.class.getResource("/images/cards/");
+        ImageView imageView = new ImageView(new Image(imageUrl + imageName));
+        cardPane.getChildren().add(imageView);
+        //});
+        //delay.play();
+    }
+
+    private void addCard(int i, int j, String imageName, int delayTime) {
+        PauseTransition delay = new PauseTransition(Duration.seconds(delayTime));
         delay.setOnFinished(event -> {
-            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
-            URL imageUrl = Board.class.getResource("/images/cards/");
-            ImageView imageView = new ImageView(new Image(imageUrl + imageName));
-            cardPane.getChildren().add(imageView);
+            addCard(i, j, imageName);
+//            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
+//            URL imageUrl = Board.class.getResource("/images/cards/");
+//            ImageView imageView = new ImageView(new Image(imageUrl + imageName));
+//            cardPane.getChildren().add(imageView);
         });
         delay.play();
     }
@@ -359,48 +372,10 @@ public class Board extends Application {
         System.out.println("Moved card from (" + x + ", " + y + ") to (" + newX + ", " + newY + ")");
     }
 
-    //    public void changeCardPosition2(int x, int y, int z) {
-//        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-//        delay.setOnFinished(event -> {
-//            for (int i = 0; i < rightCardList.length; i++) {
-//                int whoPlayerPlayThisCard = rightCardList[i][0] - 1;
-//
-//                StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get(0)).getChildren().get(whoPlayerPlayThisCard);
-//                ImageView imageView = (ImageView) newCardPane.getChildren().get(0).getChildren().get(whoPlayerPlayThisCard);
-//                StackPane nCardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(y)).getChildren().get(z);
-//
-//                // Get the start and end coordinates
-//                Bounds startBounds = newCardPane.localToScene(newCardPane.getBoundsInLocal());
-//                Bounds endBounds = nCardPane.localToScene(nCardPane.getBoundsInLocal());
-//                // Create a new ImageView to animate
-//                ImageView animatedImageView = new ImageView(imageView.getImage());
-//                animatedImageView.setX(startBounds.getMinX());
-//                animatedImageView.setY(startBounds.getMinY());
-//
-//                // Add the animated ImageView to the scene
-//                Pane root = (Pane) cardBarBox.getScene().getRoot();
-//                root.getChildren().add(animatedImageView);
-//
-//                TranslateTransition tt = new TranslateTransition(Duration.seconds(2), animatedImageView);
-//                tt.setToX(endBounds.getMinX() - startBounds.getMinX());
-//                tt.setToY(endBounds.getMinY() - startBounds.getMinY());
-//                // Start the transition
-//                tt.play();
-//
-//                tt.setOnFinished(event4 -> {
-//                    root.getChildren().remove(animatedImageView);
-//
-//                });
-//            }
-//        });
-//        delay.play();
-//
-//    }
     public void changeCardPosition2(int x, int y, int z) {
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> {
             for (int i = 0; i < rightCardList.length; i++) {
-                int whoPlayerPlayThisCard = rightCardList[i][0] - 1;
                 StackPane newCardPane = (StackPane) ((HBox) playingCards.getChildren().get((i / 3))).getChildren().get(i % 3);
                 ImageView imageView = (ImageView) newCardPane.getChildren().get(0);
                 // va pr chaque carte a deux coordo d'ou le pb de duplication
@@ -600,7 +575,7 @@ public class Board extends Application {
 
                 changeCardPosition2(0, 0, indexLastCardGrid1 + 1);
 
-                addCard(0, indexLastCardGrid1 + 1, card + ".png");
+                addCard(0, indexLastCardGrid1 + 1, card + ".png", delayCard);
 
             } else if (minPositiveDiff == diff2) {
                 // Placer dans grid2
@@ -609,7 +584,7 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(1, 1, indexLastCardGrid2 + 1);
-                addCard(1, indexLastCardGrid2 + 1, card + ".png");
+                addCard(1, indexLastCardGrid2 + 1, card + ".png",delayCard);
             } else if (minPositiveDiff == diff3) {
                 // Placer dans grid3
                 grid3[indexLastCardGrid3 + 1][0] = card;
@@ -617,7 +592,7 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(2, 2, indexLastCardGrid3 + 1);
-                addCard(2, indexLastCardGrid3 + 1, card + ".png");
+                addCard(2, indexLastCardGrid3 + 1, card + ".png",delayCard);
             } else if (minPositiveDiff == diff4) {
                 // Placer dans grid4
                 grid4[indexLastCardGrid4 + 1][0] = card;
@@ -625,7 +600,7 @@ public class Board extends Application {
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
                 changeCardPosition2(3, 3, indexLastCardGrid4 + 1);
-                addCard(3, indexLastCardGrid4 + 1, card + ".png");
+                addCard(3, indexLastCardGrid4 + 1, card + ".png",delayCard);
             } else {
                 //   isGamePaused = true;
                 for (int j = 0; j < arrowList.size(); j++) {
@@ -651,8 +626,8 @@ public class Board extends Application {
                     }
                 });
                 delay.play();
-// TODO : Ajouter la carte à la ligne choisie par le joueur + Vider la rangée + Ajouter des points
-// TODO : Faire disparaître les flèches
+                // TODO : Ajouter la carte à la ligne choisie par le joueur + Vider la rangée + Ajouter des points
+                // TODO : Faire disparaître les flèches
                 isGamePaused = false;
                 selectedRow = -1; // Réinitialiser la ligne choisie pour la prochaine fois
 
@@ -674,7 +649,7 @@ public class Board extends Application {
                 int points = grid1[0][1] + grid1[1][1] + grid1[2][1] + grid1[3][1] + grid1[4][1];
                 System.out.println(points);
                 grid1[0][0] = grid1[5][0];
-                addCard(0, 0, grid1[0][0] + ".png");
+                addCard(0, 0, grid1[0][0] + ".png",delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -685,7 +660,7 @@ public class Board extends Application {
                 int points = grid2[0][1] + grid2[1][1] + grid2[2][1] + grid2[3][1] + grid2[4][1];
                 System.out.println(points);
                 grid2[0][0] = grid2[5][0];
-                addCard(1, 0, grid2[0][0] + ".png");
+                addCard(1, 0, grid2[0][0] + ".png",delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -696,7 +671,7 @@ public class Board extends Application {
                 int points = grid3[0][1] + grid3[1][1] + grid3[2][1] + grid3[3][1] + grid3[4][1];
                 System.out.println(points);
                 grid3[0][0] = grid3[5][0];
-                addCard(2, 0, grid3[0][0] + ".png");
+                addCard(2, 0, grid3[0][0] + ".png",delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -707,7 +682,7 @@ public class Board extends Application {
                 int points = grid4[0][1] + grid4[1][1] + grid4[2][1] + grid4[3][1] + grid4[4][1];
                 System.out.println(points);
                 grid4[0][0] = grid4[5][0];
-                addCard(3, 0, grid4[0][0] + ".png");
+                addCard(3, 0, grid4[0][0] + ".png",delayCard);
                 //TODO donner les points au gars et reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -720,6 +695,7 @@ public class Board extends Application {
     }
 
     public void revealCards() {
+        //TODO cacher les cartes dans la main du joueur
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         cardPlay = 0;
         delay.setOnFinished(event -> {
