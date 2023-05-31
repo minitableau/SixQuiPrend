@@ -214,6 +214,7 @@ public class Board extends Application {
             playerNameLabel.setTextFill(colorList[i]);
 
             playerScoreLabel = new Label(players.get(i).getScore() + "");
+            playerScoreLabel.setId("playerScoreLabel" + i);
             playerScoreLabel.setFont(Font.font(16));
             playerScoreLabel.setTextFill(colorList[i]);
 
@@ -584,12 +585,9 @@ public class Board extends Application {
                 // Placer dans grid1
                 grid1[indexLastCardGrid1 + 1][0] = card;
                 grid1[indexLastCardGrid1 + 1][1] = point;
-
                 //TODO Faire la transition
                 //premet d'afficher dans la cardPane
-
                 changeCardPosition2(0, 0, indexLastCardGrid1 + 1);
-
                 addCard(0, indexLastCardGrid1 + 1, card + ".png", delayCard);
                 indexLastCardGrid1++;
             } else if (minPositiveDiff == diff2) {
@@ -629,10 +627,20 @@ public class Board extends Application {
                     grid1[0][0] = card;
                     changeCardPosition2(0, 0, indexLastCardGrid1);
                     addCard(0, 0, grid1[0][0] + ".png", delayCard);
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
-                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                    Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                    if (node instanceof Label) {
+                        Label playerScoreLabel = (Label) node;
+                        playerScoreLabel.setText(String.valueOf(score));
+                    }
+                    //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                     indexLastCardGrid1 = 0;
                 } else if (minPointRow == Spoint(grid2)) {
                     int points = Spoint(grid2);
@@ -640,10 +648,20 @@ public class Board extends Application {
                     grid2[0][0] = card;
                     changeCardPosition2(1, 1, indexLastCardGrid2);
                     addCard(1, 0, grid2[0][0] + ".png", delayCard);
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
-                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                    Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                    if (node instanceof Label) {
+                        Label playerScoreLabel = (Label) node;
+                        playerScoreLabel.setText(String.valueOf(score));
+                    }
+                    //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                     indexLastCardGrid2 = 0;
                 } else if (minPointRow == Spoint(grid3)) {
                     int points = Spoint(grid3);
@@ -651,10 +669,20 @@ public class Board extends Application {
                     grid3[0][0] = card;
                     changeCardPosition2(2, 2, indexLastCardGrid3);
                     addCard(2, 0, grid3[0][0] + ".png", delayCard);
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
-                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                    Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                    if (node instanceof Label) {
+                        Label playerScoreLabel = (Label) node;
+                        playerScoreLabel.setText(String.valueOf(score));
+                    }
+                    //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                     indexLastCardGrid3 = 0;
                 } else if (minPointRow == Spoint(grid4)) {
                     int points = Spoint(grid4);
@@ -662,10 +690,20 @@ public class Board extends Application {
                     grid4[0][0] = card;
                     changeCardPosition2(3, 3, indexLastCardGrid4);
                     addCard(3, 0, grid4[0][0] + ".png", delayCard);
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
                     //TODO donner les points au gars et reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
-                    playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                    String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                    Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                    if (node instanceof Label) {
+                        Label playerScoreLabel = (Label) node;
+                        playerScoreLabel.setText(String.valueOf(score));
+                    }
+                    //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                     indexLastCardGrid4 = 0;
                 }
 
@@ -714,52 +752,74 @@ public class Board extends Application {
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
-                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                if (node instanceof Label) {
+                    Label playerScoreLabel = (Label) node;
+                    playerScoreLabel.setText(String.valueOf(score));
+                }
+                //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                 indexLastCardGrid1 = 0;
             } else if (indexLastCardGrid2 == 5) {
                 int points = Spoint(grid2);
                 System.out.println(points);
                 grid2[0][0] = grid2[5][0];
+                addCard(1, 0, grid2[0][0] + ".png", delayCard);
                 for (int z = 1; z <= 5; z++) {
                     StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
                     cardPane.getChildren().clear();
                 }
-                addCard(1, 0, grid2[0][0] + ".png", delayCard);
                 //TODO reset la ligne
-
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
-                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                if (node instanceof Label) {
+                    Label playerScoreLabel = (Label) node;
+                    playerScoreLabel.setText(String.valueOf(score));
+                }
+                //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                 indexLastCardGrid2 = 0;
             } else if (indexLastCardGrid3 == 5) {
                 int points = Spoint(grid3);
                 System.out.println(points);
                 grid3[0][0] = grid3[5][0];
+                addCard(2, 0, grid3[0][0] + ".png", delayCard);
                 for (int z = 1; z <= 5; z++) {
                     StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
                     cardPane.getChildren().clear();
                 }
-                addCard(2, 0, grid3[0][0] + ".png", delayCard);
                 //TODO reset la ligne
-
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
-                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                if (node instanceof Label) {
+                    Label playerScoreLabel = (Label) node;
+                    playerScoreLabel.setText(String.valueOf(score));
+                }
+                //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                 indexLastCardGrid3 = 0;
             } else if (indexLastCardGrid4 == 5) {
                 int points = Spoint(grid4);
                 System.out.println(points);
                 grid4[0][0] = grid4[5][0];
+                addCard(3, 0, grid4[0][0] + ".png", delayCard);
                 for (int z = 1; z <= 5; z++) {
                     StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
                     cardPane.getChildren().clear();
                 }
-                addCard(3, 0, grid4[0][0] + ".png", delayCard);
                 //TODO donner les points au gars et reset la ligne
 
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
-                playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
+                String playerScoreLabelID = "playerScoreLabel" + whoPlayerPlayThisCard;
+                Node node = scoreBox.lookup("#" + playerScoreLabelID);
+                if (node instanceof Label) {
+                    Label playerScoreLabel = (Label) node;
+                    playerScoreLabel.setText(String.valueOf(score));
+                }
+                //playerScoreLabel.setText(players.get(whoPlayerPlayThisCard).getScore() + "");
                 indexLastCardGrid4 = 0;
             }
         }
