@@ -1,4 +1,5 @@
 package com.example.sixquiprend;
+
 import com.example.sixquiprend.Jeu.Card;
 import com.example.sixquiprend.Jeu.Game;
 import com.example.sixquiprend.Jeu.Player;
@@ -76,12 +77,14 @@ public class Board extends Application {
     private int cardPlay;
     private int[][] rightCardListWithoutSort;
     private int delayCard = 5;
+    private Music music;
 
     @Override
     public void start(Stage primaryStage) {
-        String filePath2 = "C:/Users/alexa/OneDrive/Documents/A1/JAVA/SixQuiPrend/src/main/resources/music/Shanana  Intervilles 1987 [Générique T.V. Original].wav";
-        com.example.sixquiprend.Music music = new com.example.sixquiprend.Music();
+        String filePath2 = getClass().getResource("/music/Interville.wav").getFile();
+        music = new Music();
         music.playMusic(filePath2);
+
         numberOfPlayers = players.size();
         // Créer le BorderPane principal qui contiendra les éléments du jeu
         mainPane = new BorderPane();
@@ -231,20 +234,20 @@ public class Board extends Application {
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
 
-// Charger l'image du fond d'écran
-        Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
-
-// Créer un objet BackgroundImage avec l'image chargée
-        BackgroundImage background = new BackgroundImage(
-                backgroundImage,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
-        );
-
-// Appliquer le fond d'écran à la racine (root) du BorderPane
-        mainPane.setBackground(new Background(background));
+//// Charger l'image du fond d'écran
+//        Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
+//
+//// Créer un objet BackgroundImage avec l'image chargée
+//        BackgroundImage background = new BackgroundImage(
+//                backgroundImage,
+//                BackgroundRepeat.REPEAT,
+//                BackgroundRepeat.NO_REPEAT,
+//                BackgroundPosition.DEFAULT,
+//                BackgroundSize.DEFAULT
+//        );
+//
+//// Appliquer le fond d'écran à la racine (root) du BorderPane
+//        mainPane.setBackground(new Background(background));
 
 // Afficher la fenêtre principale
         primaryStage.show();
@@ -1023,13 +1026,13 @@ public class Board extends Application {
 
     private void hideCardInHand() {
         String imageName = "/images/cards/backside.png";
-            for (int i = 0; i < 10; i++) {
-                StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
-                URL imageUrl = Board.class.getResource(imageName);
-                ImageView imageView = new ImageView(new Image(imageUrl.toString()));
-                setOnClickAction(imageView, i, 0);
-                cardPane.getChildren().add(imageView);
-            }
+        for (int i = 0; i < 10; i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            URL imageUrl = Board.class.getResource(imageName);
+            ImageView imageView = new ImageView(new Image(imageUrl.toString()));
+            setOnClickAction(imageView, i, 0);
+            cardPane.getChildren().add(imageView);
+        }
 
     }
 

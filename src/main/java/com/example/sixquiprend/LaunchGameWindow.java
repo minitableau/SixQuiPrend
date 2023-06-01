@@ -29,9 +29,13 @@ public class LaunchGameWindow extends Stage {
     private Music music;
 
     public LaunchGameWindow() {
-        String filePath2 = getClass().getResource("/music/Star Wars Main Theme (Full).wav").toString();
+
+        System.out.println("calling music");
+        String filePath2 = getClass().getResource("/music/StarWars.wav").getFile();
+        System.out.println("File path: " + filePath2);
         music = new Music();
         music.playMusic(filePath2);
+
         numberOfPlayers = 0;
         grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
