@@ -44,7 +44,7 @@ public class LaunchGameWindow extends Stage {
 
         numberOfPlayers = 0;
         grid = new GridPane();
-        grid.setPadding(new Insets(250, 400, 250, 400));
+        grid.setPadding(new Insets(260, 380, 290, 470));
         grid.setVgap(10);
         grid.setHgap(10);
 
@@ -56,7 +56,7 @@ public class LaunchGameWindow extends Stage {
         grid.add(playerNameLabel, 1, 0);
         grid.add(playerTypeLabel, 2, 0);
 
-        Image backgroundImage = new Image(getClass().getResource("/background/test").toString());
+        Image backgroundImage = new Image(getClass().getResource("/background/test.png").toString());
         BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         grid.setBackground(new Background(background));
         Scene scene = new Scene(grid, 1200, 700);
