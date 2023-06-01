@@ -233,6 +233,8 @@ public class Board extends Application {
         Scene scene = new Scene(mainPane, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+
 
 //// Charger l'image du fond d'écran
         Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
