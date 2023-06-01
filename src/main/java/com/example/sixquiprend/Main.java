@@ -8,5 +8,6 @@ public class Main {
             LaunchGameWindow launchGameWindow = new LaunchGameWindow();
             launchGameWindow.show();
         });
+
     }
 }

@@ -1,5 +1,4 @@
 package com.example.sixquiprend;
-
 import com.example.sixquiprend.Jeu.Card;
 import com.example.sixquiprend.Jeu.Game;
 import com.example.sixquiprend.Jeu.Player;
@@ -78,9 +77,11 @@ public class Board extends Application {
     private int[][] rightCardListWithoutSort;
     private int delayCard = 5;
 
-
     @Override
     public void start(Stage primaryStage) {
+        String filePath2 = "C:/Users/alexa/OneDrive/Documents/A1/JAVA/SixQuiPrend/src/main/resources/music/Shanana  Intervilles 1987 [Générique T.V. Original].wav";
+        com.example.sixquiprend.Music music = new com.example.sixquiprend.Music();
+        music.playMusic(filePath2);
         numberOfPlayers = players.size();
         // Créer le BorderPane principal qui contiendra les éléments du jeu
         mainPane = new BorderPane();
@@ -229,7 +230,25 @@ public class Board extends Application {
         Scene scene = new Scene(mainPane, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setTitle("6 Qui Prend");
         primaryStage.setScene(scene);
+
+// Charger l'image du fond d'écran
+        Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
+
+// Créer un objet BackgroundImage avec l'image chargée
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT
+        );
+
+// Appliquer le fond d'écran à la racine (root) du BorderPane
+        mainPane.setBackground(new Background(background));
+
+// Afficher la fenêtre principale
         primaryStage.show();
+
 
         // Remplir la main du joueur
         fullHand();
@@ -416,6 +435,8 @@ public class Board extends Application {
     }
 
     private void addCard(int i, int j, String imageName) {
+        //PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        //delay.setOnFinished(event -> {
         StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(i)).getChildren().get(j);
         URL imageUrl = Board.class.getResource("/images/cards/");
         ImageView imageView = new ImageView(new Image(imageUrl + imageName));
@@ -477,6 +498,7 @@ public class Board extends Application {
 
         // Flip the image before creating the animated ImageView
         if (turn) {
+            hideCardInHand();
             flipImage(animatedImageView);
         }
 
@@ -604,7 +626,6 @@ public class Board extends Application {
             ParallelTransition parallelTransition2 = new ParallelTransition(rotateTransition2, scaleTransition2);
 
             parallelTransition2.play();
-
             //Mise en liste de la carte cliqué
             Player player = players.get(playerPlaying - 1);
             Card[] handCards = player.getHandCards();
@@ -627,10 +648,13 @@ public class Board extends Application {
             playerPlaying++;
 
             if (playerPlaying > players.size()) {
+
                 playerPlaying = playerPlaying % players.size();
                 rightCardListWithoutSort = rightCardList.clone();
                 Arrays.sort(rightCardList, Comparator.comparingInt(o -> o[1]));
                 System.out.println(Arrays.deepToString(rightCardList));
+                hideCardInHand();
+
                 revealCards();
                 round++;
                 clickedCardInfoString.clear(); //Permet de reset la liste des cartes jouées (fin de tour)
@@ -753,10 +777,15 @@ public class Board extends Application {
                     grid1[0][0] = card;
                     changeCardPosition2(0, 0, indexLastCardGrid1);
                     addCard(0, 0, grid1[0][0] + ".png", delayCard);
-                    for (int z = 1; z <= 5; z++) {
-                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
-                        cardPane.getChildren().clear();
-                    }
+                    PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                    delay.setOnFinished(event -> {
+                        for (int z = 1; z <= 5; z++) {
+                            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
+                            cardPane.getChildren().clear();
+                        }
+                    });
+
+                    delay.play();
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
@@ -774,10 +803,15 @@ public class Board extends Application {
                     grid2[0][0] = card;
                     changeCardPosition2(1, 1, indexLastCardGrid2);
                     addCard(1, 0, grid2[0][0] + ".png", delayCard);
-                    for (int z = 1; z <= 5; z++) {
-                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
-                        cardPane.getChildren().clear();
-                    }
+                    PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                    delay.setOnFinished(event -> {
+                        for (int z = 1; z <= 5; z++) {
+                            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
+                            cardPane.getChildren().clear();
+                        }
+                    });
+
+                    delay.play();
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
@@ -795,10 +829,15 @@ public class Board extends Application {
                     grid3[0][0] = card;
                     changeCardPosition2(2, 2, indexLastCardGrid3);
                     addCard(2, 0, grid3[0][0] + ".png", delayCard);
-                    for (int z = 1; z <= 5; z++) {
-                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
-                        cardPane.getChildren().clear();
-                    }
+                    PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                    delay.setOnFinished(event -> {
+                        for (int z = 1; z <= 5; z++) {
+                            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
+                            cardPane.getChildren().clear();
+                        }
+                    });
+
+                    delay.play();
                     //TODO reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
@@ -816,10 +855,15 @@ public class Board extends Application {
                     grid4[0][0] = card;
                     changeCardPosition2(3, 3, indexLastCardGrid4);
                     addCard(3, 0, grid4[0][0] + ".png", delayCard);
-                    for (int z = 1; z <= 5; z++) {
-                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
-                        cardPane.getChildren().clear();
-                    }
+                    PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                    delay.setOnFinished(event -> {
+                        for (int z = 1; z <= 5; z++) {
+                            StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
+                            cardPane.getChildren().clear();
+                        }
+                    });
+
+                    delay.play();
                     //TODO donner les points au gars et reset la ligne
                     int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                     players.get(whoPlayerPlayThisCard).setScore(score);
@@ -870,10 +914,15 @@ public class Board extends Application {
                 int points = Spoint(grid1);
                 System.out.println(points);
                 grid1[0][0] = grid1[5][0];
-                for (int z = 1; z <= 5; z++) {
-                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
-                    cardPane.getChildren().clear();
-                }
+                PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                delay.setOnFinished(event -> {
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(0)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
+                });
+
+                delay.play();
                 addCard(0, 0, grid1[0][0] + ".png", delayCard);
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
@@ -891,10 +940,15 @@ public class Board extends Application {
                 System.out.println(points);
                 grid2[0][0] = grid2[5][0];
                 addCard(1, 0, grid2[0][0] + ".png", delayCard);
-                for (int z = 1; z <= 5; z++) {
-                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
-                    cardPane.getChildren().clear();
-                }
+                PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                delay.setOnFinished(event -> {
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(1)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
+                });
+
+                delay.play();
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -911,10 +965,15 @@ public class Board extends Application {
                 System.out.println(points);
                 grid3[0][0] = grid3[5][0];
                 addCard(2, 0, grid3[0][0] + ".png", delayCard);
-                for (int z = 1; z <= 5; z++) {
-                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
-                    cardPane.getChildren().clear();
-                }
+                PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                delay.setOnFinished(event -> {
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(2)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
+                });
+
+                delay.play();
                 //TODO reset la ligne
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
                 players.get(whoPlayerPlayThisCard).setScore(score);
@@ -931,10 +990,15 @@ public class Board extends Application {
                 System.out.println(points);
                 grid4[0][0] = grid4[5][0];
                 addCard(3, 0, grid4[0][0] + ".png", delayCard);
-                for (int z = 1; z <= 5; z++) {
-                    StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
-                    cardPane.getChildren().clear();
-                }
+                PauseTransition delay = new PauseTransition(Duration.seconds(delayCard));
+                delay.setOnFinished(event -> {
+                    for (int z = 1; z <= 5; z++) {
+                        StackPane cardPane = (StackPane) ((HBox) gameCardBarBox.getChildren().get(3)).getChildren().get(z);
+                        cardPane.getChildren().clear();
+                    }
+                });
+
+                delay.play();
                 //TODO donner les points au gars et reset la ligne
 
                 int score = players.get(whoPlayerPlayThisCard).getScore() + points;
@@ -959,14 +1023,14 @@ public class Board extends Application {
 
     private void hideCardInHand() {
         String imageName = "/images/cards/backside.png";
+            for (int i = 0; i < 10; i++) {
+                StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+                URL imageUrl = Board.class.getResource(imageName);
+                ImageView imageView = new ImageView(new Image(imageUrl.toString()));
+                setOnClickAction(imageView, i, 0);
+                cardPane.getChildren().add(imageView);
+            }
 
-        for (int i = 0; i < 10; i++) {
-            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
-            URL imageUrl = Board.class.getResource(imageName);
-            ImageView imageView = new ImageView(new Image(imageUrl.toString()));
-            setOnClickAction(imageView, i, 0);
-            cardPane.getChildren().add(imageView);
-        }
     }
 
     private void suprHideCard() {
@@ -996,6 +1060,7 @@ public class Board extends Application {
     }
 
     public void revealCards() {
+
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         cardPlay = 0;
         delay.setOnFinished(event -> {
