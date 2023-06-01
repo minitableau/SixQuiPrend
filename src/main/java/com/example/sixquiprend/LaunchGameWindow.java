@@ -8,8 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +44,7 @@ public class LaunchGameWindow extends Stage {
 
         numberOfPlayers = 0;
         grid = new GridPane();
-        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setPadding(new Insets(250, 400, 250, 400));
         grid.setVgap(10);
         grid.setHgap(10);
 
@@ -50,8 +56,14 @@ public class LaunchGameWindow extends Stage {
         grid.add(playerNameLabel, 1, 0);
         grid.add(playerTypeLabel, 2, 0);
 
-        Scene scene = new Scene(grid, 300, 450);
+        Image backgroundImage = new Image(getClass().getResource("/background/test").toString());
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        grid.setBackground(new Background(background));
+        Scene scene = new Scene(grid, 1200, 700);
+
         setScene(scene);
+        setResizable(false);
+
         setTitle("Lancement du jeu");
     }
 
