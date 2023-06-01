@@ -235,7 +235,7 @@ public class Board extends Application {
         primaryStage.setScene(scene);
 
 //// Charger l'image du fond d'écran
-       Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
+        Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
 
 //// Créer un objet BackgroundImage avec l'image chargée
         BackgroundImage background = new BackgroundImage(
@@ -329,66 +329,51 @@ public class Board extends Application {
             // Désactiver les clics sur les flèches
             arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
             canClickArrow = false;
-        }}
+        }
+    }
 
     private void botPlay3() {
+        int witchCardPlay2 = 0;
         Card[] handCards = players.get(playerPlaying - 1).getHandCards();
-        Arrays.sort(handCards, (card1, card2) -> Integer.compare(card1.getNumber(), card2.getNumber()));
+        boolean[] handCards2 = players.get(playerPlaying - 1).getIsCardPlayed();
 
         int numberRow1 = grid1[indexLastCardGrid1][0];
         int numberRow2 = grid2[indexLastCardGrid2][0];
         int numberRow3 = grid3[indexLastCardGrid3][0];
         int numberRow4 = grid4[indexLastCardGrid4][0];
-
         Card closestCard = null;
         int closestDiff = Integer.MAX_VALUE;
-
-        for (Card card : handCards) {
-            int cardNumber = card.getNumber();
-            int diff;
-            if (cardNumber > numberRow1 && (diff = cardNumber - numberRow1) < closestDiff) {
-                closestCard = card;
-                closestDiff = diff;
-            }
-            if (cardNumber > numberRow2 && (diff = cardNumber - numberRow2) < closestDiff) {
-                closestCard = card;
-                closestDiff = diff;
-            }
-            if (cardNumber > numberRow3 && (diff = cardNumber - numberRow3) < closestDiff) {
-                closestCard = card;
-                closestDiff = diff;
-            }
-            if (cardNumber > numberRow4 && (diff = cardNumber - numberRow4) < closestDiff) {
-                closestCard = card;
-                closestDiff = diff;
+        for (int i = 0; i < handCards.length; i++) {
+            if (handCards2[i]) {
+                continue;
+            } else {
+                int cardNumber = handCards[i].getNumber();
+                int diff;
+                if (cardNumber > numberRow1 && (diff = cardNumber - numberRow1) < closestDiff) {
+                    closestCard = handCards[i];
+                    closestDiff = diff;
+                }
+                if (cardNumber > numberRow2 && (diff = cardNumber - numberRow2) < closestDiff) {
+                    closestCard = handCards[i];
+                    closestDiff = diff;
+                }
+                if (cardNumber > numberRow3 && (diff = cardNumber - numberRow3) < closestDiff) {
+                    closestCard = handCards[i];
+                    closestDiff = diff;
+                }
+                if (cardNumber > numberRow4 && (diff = cardNumber - numberRow4) < closestDiff) {
+                    closestCard = handCards[i];
+                    closestDiff = diff;
+                }
             }
         }
 
         if (closestCard != null) {
             int witchCardPlay = Arrays.asList(handCards).indexOf(closestCard);
-            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay);
-            String cardPaneId = cardPane.getId();
-            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
-            System.out.println("CardPane clicked: " + clickedIndex);
-            System.out.println("Image clicked");
-            System.out.println("Card clicked: x = " + witchCardPlay + ", y = " + 0);
-
-            // ATTENTION X = Colonnes, Y = Lignes.
-            changeCardPosition(witchCardPlay, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
-            System.out.println("carte restante"+handCards.length);
-
-            // Désactiver les clics sur les images
-            canClickArrow = true;
-            // Désactiver les clics sur les flèches
-            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
-            canClickArrow = false;
-        } else {
-            Arrays.sort(handCards, (card1, card2) -> Integer.compare(card1.getNumber(), card2.getNumber()));
-            for (Card card : handCards) {
-                System.out.println("Card: " + card.getNumber() + ", Points: " + card.getPoints());
-            }
-            int witchCardPlay = round - 1;
-            if (witchCardPlay != 10) {
+            if (players.get(playerPlaying - 1).getIsCardPlayed()[witchCardPlay]) {
+                botPlay3();
+            } else {
+                players.get(playerPlaying - 1).setIsCardPlayed(witchCardPlay);
                 StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay);
                 String cardPaneId = cardPane.getId();
                 clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
@@ -398,79 +383,44 @@ public class Board extends Application {
 
                 // ATTENTION X = Colonnes, Y = Lignes.
                 changeCardPosition(witchCardPlay, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+
                 // Désactiver les clics sur les images
                 canClickArrow = true;
                 // Désactiver les clics sur les flèches
                 arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
                 canClickArrow = false;
             }
+        } else {
+//            if (handCards2[0] && handCards2[1] && handCards2[2] && handCards2[3] && handCards2[4] && handCards2[5] && handCards2[6] && handCards2[7] && handCards2[8] && handCards2[9]) {
+//                return;
+//            }
+            //Arrays.sort(handCards, (card1, card2) -> Integer.compare(card1.getNumber(), card2.getNumber()));
+            for (int i = 0; i < handCards.length; i++) {
+                System.out.println("Card: " + handCards[i].getNumber() + ", Points: " + handCards[i].getPoints());
+                if (handCards2[i]) {
+                    continue;
+                } else {
+                    witchCardPlay2 = i;
+                }
+            }
+            players.get(playerPlaying - 1).setIsCardPlayed(witchCardPlay2);
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay2);
+            String cardPaneId = cardPane.getId();
+            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+            System.out.println("CardPane clicked: " + clickedIndex);
+            System.out.println("Image clicked");
+            System.out.println("Card clicked: x = " + witchCardPlay2 + ", y = " + 0);
+
+            // ATTENTION X = Colonnes, Y = Lignes.
+            changeCardPosition(witchCardPlay2, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+            // Désactiver les clics sur les images
+            canClickArrow = true;
+            // Désactiver les clics sur les flèches
+            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+            canClickArrow = false;
+
         }
     }
-
-    private void priorityCard() {
-//        List<Integer> RowIn = new ArrayList<>();
-//        if (indexLastCardGrid1 != 4) {
-//            RowIn.add(1);
-//        }
-//        if (indexLastCardGrid2 != 4) {
-//            RowIn.add(2);
-//        }
-//        if (indexLastCardGrid3 != 4) {
-//            RowIn.add(3);
-//        }
-//        if (indexLastCardGrid4 != 4) {
-//            RowIn.add(4);
-//        }
-
-//        System.out.println("RowIn: " + RowIn);
-
-
-    }
-
-//    private void botPlay3() {
-//        int randomValidIndex = ;
-//        if (randomValidIndex != -1) {
-//            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(randomValidIndex);
-//            String cardPaneId = cardPane.getId();
-//            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
-//            System.out.println("CardPane clicked: " + clickedIndex);
-//            System.out.println("Image clicked");
-//            System.out.println("Card clicked: x = " + randomValidIndex + ", y = " + 0);
-//
-//            // ATTENTION X = Colonnes, Y = Lignes.
-//            changeCardPosition(randomValidIndex, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
-//            // Désactiver les clics sur les images
-//            canClickArrow = true;
-//            // Désactiver les clics sur les flèches
-//            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
-//            canClickArrow = false;
-//        }
-//   }
-//    private void evaluateHand() {
-//        for (Card card : players.get(playerPlaying - 1).getHandCards()) {
-//            int evaluation = evaluateCard(card);
-//            System.out.println("Card: " + card.getNumber() + ", Evaluation: " + evaluation);
-//        }
-//    }
-//    private int evaluateCard(Card card) {
-//        int value = card.getNumber();
-//        int bullHeads = card.getPoints();
-//        int proximityWeight = 2; // Poids pour l'évaluation de la proximité des rangées
-//        // Calculez l'évaluation en combinant les différents critères
-//        int evaluation = value - bullHeads;
-//        // Considérez la proximité des rangées
-//        for (int i = 0; i < 4; i++) {
-//            int remainingCapacityInRow = 5 - indexLastCardGrid1;
-//            if (remainingCapacityInRow <= proximityWeight) {
-//                // La rangée est proche de sa capacité maximale
-//                if (card.getNumber() > grid1[indexLastCardGrid1][0]) {
-//                    evaluation -= proximityWeight;
-//                }
-//            }
-//        }
-//        // Ajoutez d'autres critères d'évaluation si nécessaire
-//        return evaluation;
-//    }
 
     private void botPlay() {
         int randomValidIndex = getRandomValidIndex();
@@ -491,7 +441,6 @@ public class Board extends Application {
             canClickArrow = false;
         }
     }
-
 
 
     private int getRandomValidIndex() {
