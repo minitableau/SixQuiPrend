@@ -63,7 +63,7 @@ public class LaunchGameWindow extends Stage {
         TextField playerNameField = new TextField();
         playerNameField.setPromptText("Joueur " + (currentRow - 1));
         ComboBox<String> playerTypeComboBox = new ComboBox<>();
-        playerTypeComboBox.getItems().addAll("Joueur humain", "Bot 1","Bot 2");
+        playerTypeComboBox.getItems().addAll("Joueur humain", "Bot 1","Bot 2","Bot 3");
         // Valeur par défaut. Changé par bot ?
         playerTypeComboBox.setValue("Joueur humain");
         addPlayerButton = new Button("+");

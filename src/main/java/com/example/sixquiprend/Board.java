@@ -303,7 +303,7 @@ public class Board extends Application {
             botPlay2();
         }
         if (players.get(playerPlaying - 1).getType().equals("Bot 3")) {
-            botPlay2();
+            botPlay3();
         }
     }
 
@@ -329,8 +329,77 @@ public class Board extends Application {
             // Désactiver les clics sur les flèches
             arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
             canClickArrow = false;
+        }}
+
+    private void botPlay3() {
+        Card[] handCards = players.get(playerPlaying - 1).getHandCards();
+        Arrays.sort(handCards, (card1, card2) -> Integer.compare(card1.getNumber(), card2.getNumber()));
+
+        int numberRow1 = grid1[indexLastCardGrid1][0];
+        int numberRow2 = grid2[indexLastCardGrid2][0];
+        int numberRow3 = grid3[indexLastCardGrid3][0];
+        int numberRow4 = grid4[indexLastCardGrid4][0];
+
+        Card closestCard = null;
+        int closestDiff = Integer.MAX_VALUE;
+
+        for (Card card : handCards) {
+            int cardNumber = card.getNumber();
+            int diff;
+            if (cardNumber > numberRow1 && (diff = cardNumber - numberRow1) < closestDiff) {
+                closestCard = card;
+                closestDiff = diff;
+            }
+            if (cardNumber > numberRow2 && (diff = cardNumber - numberRow2) < closestDiff) {
+                closestCard = card;
+                closestDiff = diff;
+            }
+            if (cardNumber > numberRow3 && (diff = cardNumber - numberRow3) < closestDiff) {
+                closestCard = card;
+                closestDiff = diff;
+            }
+            if (cardNumber > numberRow4 && (diff = cardNumber - numberRow4) < closestDiff) {
+                closestCard = card;
+                closestDiff = diff;
+            }
+        }
+
+        if (closestCard != null) {
+            int witchCardPlay = Arrays.asList(handCards).indexOf(closestCard);
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay);
+            String cardPaneId = cardPane.getId();
+            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+            System.out.println("CardPane clicked: " + clickedIndex);
+            System.out.println("Image clicked");
+            System.out.println("Card clicked: x = " + witchCardPlay + ", y = " + 0);
+
+            // ATTENTION X = Colonnes, Y = Lignes.
+            changeCardPosition(witchCardPlay, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+            // Désactiver les clics sur les images
+            canClickArrow = true;
+            // Désactiver les clics sur les flèches
+            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+            canClickArrow = false;
+        } else {
+            // Si aucune carte supérieure n'est disponible, jouer la plus petite carte
+            int smallestCardIndex = 0;
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(smallestCardIndex);
+            String cardPaneId = cardPane.getId();
+            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+            System.out.println("CardPane clicked: " + clickedIndex);
+            System.out.println("Image clicked");
+            System.out.println("Card clicked: x = " + smallestCardIndex + ", y = " + 0);
+
+            // ATTENTION X = Colonnes, Y = Lignes.
+            changeCardPosition(smallestCardIndex, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+            // Désactiver les clics sur les images
+            canClickArrow = true;
+            // Désactiver les clics sur les flèches
+            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+            canClickArrow = false;
         }
     }
+
 
     private void priorityCard() {
 //        List<Integer> RowIn = new ArrayList<>();
@@ -416,6 +485,8 @@ public class Board extends Application {
             canClickArrow = false;
         }
     }
+
+
 
     private int getRandomValidIndex() {
         List<Integer> validIndices = new ArrayList<>();
