@@ -46,7 +46,7 @@ public class Board extends Application {
     private Label currentRoundLabel;
     private Label playerScoreLabel;
     private int playerPlaying = 1;
-    private int time = 0;
+    private int time = 2;
     private double fliptime = 0.5;
     private int round = 1;
     private VBox gameCardBarBox;
@@ -273,8 +273,51 @@ public class Board extends Application {
                 addCardInHand(i, handCards[i].getNumber() + ".png");
             }
         }
+
+        if (players.get(playerPlaying - 1).getType().equals("Bot")) {
+            botPlay();
+        }
     }
 
+    private void botPlay() {
+        int randomValidIndex = getRandomValidIndex();
+        if (randomValidIndex != -1) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(randomValidIndex);
+            String cardPaneId = cardPane.getId();
+            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+            System.out.println("CardPane clicked: " + clickedIndex);
+            System.out.println("Image clicked");
+            System.out.println("Card clicked: x = " + randomValidIndex + ", y = " + 0);
+
+            // ATTENTION X = Colonnes, Y = Lignes.
+            changeCardPosition(randomValidIndex, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+            // Désactiver les clics sur les images
+            canClickArrow = true;
+            // Désactiver les clics sur les flèches
+            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+            canClickArrow = false;
+        }
+    }
+
+    private int getRandomValidIndex() {
+        List<Integer> validIndices = new ArrayList<>();
+
+        for (int i = 0; i < cardBarBox.getChildren().size(); i++) {
+            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
+            // Vérifier si la case contient un élément (ajoutez des conditions selon vos besoins)
+            if (cardPane.getChildren().size() > 0) {
+                validIndices.add(i);
+            }
+        }
+
+        if (validIndices.isEmpty()) {
+            return -1; // Aucune case valide trouvée
+        }
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(validIndices.size());
+        return validIndices.get(randomIndex);
+    }
 
     private void addCard(int i, int j, String imageName) {
         //PauseTransition delay = new PauseTransition(Duration.seconds(5));
@@ -307,11 +350,6 @@ public class Board extends Application {
         setOnClickAction(imageView, i, 0);
         cardPane.getChildren().add(imageView);
     }
-
-
-
-
-
 
 
     public void setOnClickAction(ImageView imageView, int x, int y) {
