@@ -375,31 +375,37 @@ public class Board extends Application {
 
             // ATTENTION X = Colonnes, Y = Lignes.
             changeCardPosition(witchCardPlay, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+            System.out.println("carte restante"+handCards.length);
+
             // Désactiver les clics sur les images
             canClickArrow = true;
             // Désactiver les clics sur les flèches
             arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
             canClickArrow = false;
         } else {
-            // Si aucune carte supérieure n'est disponible, jouer la plus petite carte
-            int smallestCardIndex = 0;
-            StackPane cardPane = (StackPane) cardBarBox.getChildren().get(smallestCardIndex);
-            String cardPaneId = cardPane.getId();
-            clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
-            System.out.println("CardPane clicked: " + clickedIndex);
-            System.out.println("Image clicked");
-            System.out.println("Card clicked: x = " + smallestCardIndex + ", y = " + 0);
+            Arrays.sort(handCards, (card1, card2) -> Integer.compare(card1.getNumber(), card2.getNumber()));
+            for (Card card : handCards) {
+                System.out.println("Card: " + card.getNumber() + ", Points: " + card.getPoints());
+            }
+            int witchCardPlay = round - 1;
+            if (witchCardPlay != 10) {
+                StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay);
+                String cardPaneId = cardPane.getId();
+                clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
+                System.out.println("CardPane clicked: " + clickedIndex);
+                System.out.println("Image clicked");
+                System.out.println("Card clicked: x = " + witchCardPlay + ", y = " + 0);
 
-            // ATTENTION X = Colonnes, Y = Lignes.
-            changeCardPosition(smallestCardIndex, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
-            // Désactiver les clics sur les images
-            canClickArrow = true;
-            // Désactiver les clics sur les flèches
-            arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
-            canClickArrow = false;
+                // ATTENTION X = Colonnes, Y = Lignes.
+                changeCardPosition(witchCardPlay, 0, (playerPlaying - 1) / 3, (playerPlaying - 1) % 3, true);
+                // Désactiver les clics sur les images
+                canClickArrow = true;
+                // Désactiver les clics sur les flèches
+                arrowSet.forEach(arrow2 -> arrow2.setOnMouseClicked(null));
+                canClickArrow = false;
+            }
         }
     }
-
 
     private void priorityCard() {
 //        List<Integer> RowIn = new ArrayList<>();
