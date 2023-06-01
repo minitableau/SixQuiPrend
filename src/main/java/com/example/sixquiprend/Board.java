@@ -235,19 +235,19 @@ public class Board extends Application {
         primaryStage.setScene(scene);
 
 //// Charger l'image du fond d'écran
-//        Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
-//
+       Image backgroundImage = new Image(getClass().getResource("/background/background2.png").toString());
+
 //// Créer un objet BackgroundImage avec l'image chargée
-//        BackgroundImage background = new BackgroundImage(
-//                backgroundImage,
-//                BackgroundRepeat.REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.DEFAULT,
-//                BackgroundSize.DEFAULT
-//        );
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT
+        );
 //
 //// Appliquer le fond d'écran à la racine (root) du BorderPane
-//        mainPane.setBackground(new Background(background));
+        mainPane.setBackground(new Background(background));
 
 // Afficher la fenêtre principale
         primaryStage.show();
