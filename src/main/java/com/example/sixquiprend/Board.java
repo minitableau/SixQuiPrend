@@ -316,7 +316,7 @@ public class Board extends Application {
             System.out.println("Card: " + card.getNumber() + ", Points: " + card.getPoints());
         }
         int witchCardPlay = round - 1;
-        if (witchCardPlay != 10) {
+        if (witchCardPlay != 11) {
             StackPane cardPane = (StackPane) cardBarBox.getChildren().get(witchCardPlay);
             String cardPaneId = cardPane.getId();
             clickedIndex = Integer.parseInt(cardPaneId.substring(cardPaneId.lastIndexOf("_") + 1));
@@ -447,15 +447,12 @@ public class Board extends Application {
 
     private int getRandomValidIndex() {
         List<Integer> validIndices = new ArrayList<>();
-
         for (int i = 0; i < cardBarBox.getChildren().size(); i++) {
             StackPane cardPane = (StackPane) cardBarBox.getChildren().get(i);
-            // Vérifier si la case contient un élément (ajoutez des conditions selon vos besoins)
             if (cardPane.getChildren().size() > 0) {
                 validIndices.add(i);
             }
         }
-
         if (validIndices.isEmpty()) {
             return -1; // Aucune case valide trouvée
         }
